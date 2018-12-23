@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Rajdhani');
+* {
+  font-family: 'Rajdhani', sans-serif;
+}
+.App {
+  text-align: center;
+}
+
+.section-header{
+  padding: 5px 10px;
+  font-size: 1.2em;
+  text-align: left;
+}
+
+.title-home{
+  display: block;
+  padding: 10px;
+  font-size: 1.5em;
+}
+.home{
+  display: flex;    
+  height: 100vh;    
+}
+
+.menubar{
+  transition: width 0.4s ease-in-out;
+}
+.main{
+  width: 70vw;
+}
+.sidebar{
+  width: 25vw;
+}

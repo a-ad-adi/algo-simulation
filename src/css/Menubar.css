@@ -1,0 +1,48 @@
+.menubar{
+    background: #333;
+    color: white;
+}
+span{
+    float: right;
+    cursor: pointer;
+}
+.menubar .max-btn{
+    display: none;
+}
+
+.menus{
+    font-size: 0.8em;
+    transition: all 0.3s ease-in-out;
+    width: 15vw;
+}
+.menus-min{
+    width: 5vw;
+}
+.menu{
+    margin: 8px 5px;    
+}
+.menu-title{
+    cursor: pointer;
+}
+.main-menu > .menu-title {
+    padding-bottom: 3px;
+    border-bottom: 1px solid grey;    
+}
+.sub-menus{
+    transition: all 0.1s ease-in-out; 
+}
+.sub-menu{
+    margin: 3px;
+    cursor: pointer;
+}
+.menu-collapse-expand{
+    display: inline;
+    float: right;
+    cursor: pointer;
+    text-align: right;
+}
+.sub-menu-collapse{
+    transform-origin: top;
+    transform: scale(1,0);
+    height: 0px;
+}
