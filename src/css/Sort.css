@@ -29,3 +29,18 @@ input{
     font-size: 1em;
 
 }
+.sort{
+    overflow-y: auto;
+}
+
+.init{
+    padding: 10px;
+    height: 15vh;
+}
+
+.simulation{    
+    padding: 10px;    
+    height: 70vh;
+    overflow: auto;
+    scrollbar-width: thin;
+}

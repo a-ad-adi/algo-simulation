@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import "./../css/Menu.css";
 import clsUtil from "./../util/class_modifier";
+import stateUtil from "./../util/state_modifier";
 
 class Menu extends React.Component {
   constructor(props) {
@@ -20,7 +21,6 @@ class Menu extends React.Component {
     this.handleMinimize = this.handleMinimize.bind(this);
     this.loadSubMenus = this.loadSubMenus.bind(this);
   }
-
   render() {
     let name = "";
     if (this.props.type === MAIN_MENU) name = this.props.menu;
@@ -69,13 +69,13 @@ class Menu extends React.Component {
     if (this.state.data.minMax === MIN) {
       newCls = clsUtil.getClsList(this.state.cls.subMenuCls).addCls(COLLAPSE)
         .clsStr;
-      cls = updateSubState(this.state.cls, "subMenuCls", newCls);
-      data = updateSubState(this.state.data, "minMax", MAX);
+      cls = stateUtil.updateSubState(this.state.cls, "subMenuCls", newCls);
+      data = stateUtil.updateSubState(this.state.data, "minMax", MAX);
     } else {
       newCls = clsUtil.getClsList(this.state.cls.subMenuCls).removeCls(COLLAPSE)
         .clsStr;
-      cls = updateSubState(this.state.cls, "subMenuCls", newCls);
-      data = updateSubState(this.state.data, "minMax", MIN);
+      cls = stateUtil.updateSubState(this.state.cls, "subMenuCls", newCls);
+      data = stateUtil.updateSubState(this.state.data, "minMax", MIN);
     }
     this.setState({ cls, data });
   }
@@ -86,11 +86,6 @@ class Menu extends React.Component {
       algo: this.props.subMenu
     });
   }
-}
-
-function updateSubState(prop, key, val) {
-  prop[key] = val;
-  return prop;
 }
 
 export default Menu;

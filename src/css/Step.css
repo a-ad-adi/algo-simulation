@@ -1,0 +1,17 @@
+.btn{
+    border: 1px solid black;
+    box-shadow: 0xp 0px 4px;
+    display: inline-block;
+    margin: 2px;
+    padding: 2px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.Step{
+    position: relative;
+    border: 1px solid grey;    
+}
+.Step .container{
+    min-height: 200px;
+    max-height: 500px;    
+}

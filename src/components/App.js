@@ -43,7 +43,6 @@ class App extends Component {
   }
 
   changeComponent(component){
-    console.log("In app : ", component)
     this.setState({component});
   }
 }
