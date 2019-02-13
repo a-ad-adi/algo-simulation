@@ -15,20 +15,10 @@ const [SORT, SHORTEST_PATH, RAPHAEL, BONSAI, GSAP, SWAP] = [
   "Gsap",
   "Gsap_swap"
 ];
-class Main extends Component {
+
+export default class Main extends Component {
   constructor(props) {
     super(props);
-  }
-
-  render() {
-    return (
-      <div className="main">
-        <div className="section-header">
-          {this.props.component.type} : {this.props.component.algo}
-        </div>
-        {this.loadComponent()}
-      </div>
-    );
   }
 
   loadComponent() {
@@ -45,8 +35,16 @@ class Main extends Component {
     }else if (this.props.component.algo === SWAP) {
       return <Swap notify={this.props.notify} />;
     }
+  }
 
+  render() {
+    return (
+      <div className="main">
+        <div className="section-header">
+          {this.props.component.type} : {this.props.component.algo}
+        </div>
+        {this.loadComponent()}
+      </div>
+    );
   }
 }
-
-export default Main;

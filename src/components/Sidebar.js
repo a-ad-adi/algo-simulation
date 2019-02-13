@@ -1,33 +1,20 @@
 import React, { Component } from "react";
 import "./../css/Sidebar.css";
 import { CSSTransitionGroup } from 'react-transition-group';
+import { nTypes } from './../util/GlobalVars';
 
-class Sidebar extends Component {
+export default class Sidebar extends Component {
+  
   constructor(props) {
     super(props);
     this.state = {notifications: props.notifications};
     this.displayNotifications = this.displayNotifications.bind(this);
   }
-  render() {
-    return (
-      <div className="sidebar">
-        <div className="section-header">Sidebar</div>
-        <CSSTransitionGroup
-          transitionName="note"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}
-        >
-        {this.displayNotifications()}
-        </CSSTransitionGroup>
-      </div>
-    );
-  }
 
   displayNotifications() {
     return this.state.notifications.map((n, i) => {
-      if (n.type === "GREET" || n.type === "NOTIFY") {
-        const id = n.id;
-        console.log("setting timeout..", id);
+      if (n.type === nTypes.GREET || n.type === nTypes.NOTIFY) {
+        const id = n.id;        
         setTimeout( (id) => {
           let ind = this.state.notifications.find( (note) => note.id === id);
           let notes = this.state.notifications;
@@ -45,6 +32,19 @@ class Sidebar extends Component {
       );
     });
   }
-}
 
-export default Sidebar;
+  render() {
+    return (
+      <div className="sidebar">
+        <div className="section-header">Sidebar</div>
+        <CSSTransitionGroup
+          transitionName="note"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}
+        >
+        {this.displayNotifications()}
+        </CSSTransitionGroup>
+      </div>
+    );
+  }
+}

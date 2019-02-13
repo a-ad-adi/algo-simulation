@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import Main from "./Main";
 import Sidebar from "./Sidebar";
 import Menubar from "./Menubar";
+import { nTypes } from './../util/GlobalVars';
 
 import "./../css/App.css";
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,7 +14,7 @@ class App extends Component {
         type: "Select an algorithm",
         algo: ""
       },
-      notifications: [{id: Date.now(), timeOut: 2000, type: "GREET", msg: "Hi there..!!" }]
+      notifications: [{id: Date.now(), timeOut: 2000, type: nTypes.GREET, msg: "Hi there..!!" }]
     };
     this.notify = this.notify.bind(this);
     this.changeComponent = this.changeComponent.bind(this);
@@ -46,5 +47,3 @@ class App extends Component {
     this.setState({component});
   }
 }
-
-export default App;

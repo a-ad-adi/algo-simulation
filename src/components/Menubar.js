@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import Menu from "./Menu";
-import "./../css/Menubar.css";
 import clsUtil from "./../util/class_modifier";
 import stateUtil from "./../util/state_modifier";
+import "./../css/Menubar.css";
 
-class Menubar extends Component {
+const [MIN, MAX] = ["-", "+"];
+
+export default class Menubar extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -22,31 +25,6 @@ class Menubar extends Component {
       }
     };
     this.handleClick = this.handleClick.bind(this);
-  }
-
-  render() {
-    return (
-      <div className="menubar section-header">
-        {this.state.data.title}
-        <span className="min-btn" onClick={this.handleClick}>
-          {this.state.data.minMax}
-        </span>
-        <div className={this.state.cls.menubarCls}>{this.loadMenus()}</div>
-      </div>
-    );
-  }
-
-  loadMenus() {
-    return Object.keys(this.state.menus).map(menu => {
-      return (
-        <Menu
-          type="main-menu"
-          menu={menu}
-          subMenus={this.state.menus[menu]}
-          changeComponent={this.props.changeComponent}
-        />
-      );
-    });
   }
 
   handleClick(e) {
@@ -69,8 +47,30 @@ class Menubar extends Component {
       });
     }
   }
+
+  loadMenus() {
+    return Object.keys(this.state.menus).map((menu,index) => {
+      return (
+        <Menu
+          type="main-menu"
+          menu={menu}
+          subMenus={this.state.menus[menu]}
+          changeComponent={this.props.changeComponent}
+          key={index}
+        />
+      );
+    });
+  }
+
+  render() {
+    return (
+      <div className="menubar section-header">
+        {this.state.data.title}
+        <span className="min-btn" onClick={this.handleClick}>
+          {this.state.data.minMax}
+        </span>
+        <div className={this.state.cls.menubarCls}>{this.loadMenus()}</div>
+      </div>
+    );
+  }
 }
-
-export default Menubar;
-
-const [MIN, MAX] = ["-", "+"];

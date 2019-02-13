@@ -1,9 +1,18 @@
 import React from "react";
-import "./../css/Menu.css";
 import clsUtil from "./../util/class_modifier";
 import stateUtil from "./../util/state_modifier";
+import "./../css/Menu.css";
 
-class Menu extends React.Component {
+const [MAIN_MENU, SUB_MENU, COLLAPSE, MIN, MAX] = [
+  "main-menu",
+  "sub-menu",
+  "sub-menu-collapse",
+  "-",
+  "+"
+];
+
+export default class Menu extends React.Component {
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -21,49 +30,14 @@ class Menu extends React.Component {
     this.handleMinimize = this.handleMinimize.bind(this);
     this.loadSubMenus = this.loadSubMenus.bind(this);
   }
-  render() {
-    let name = "";
-    if (this.props.type === MAIN_MENU) name = this.props.menu;
-    else name = this.props.subMenu;
-    return (
-      <div ref={this.props.type} className={this.props.type}>
-        <div className="menu-title" onClick={this.handleClick}>
-          {name}
-          {this.loadButtons()}
-        </div>
-        {this.loadSubMenus()}
-      </div>
-    );
+    
+  handleClick(e) {
+    this.props.changeComponent({
+      type: this.props.menu,
+      algo: this.props.subMenu
+    });
   }
-  loadSubMenus() {
-    if (this.props.type === MAIN_MENU) {
-      const subMenus = this.props.subMenus.map(subMenu => {
-        return (
-          <Menu
-            type={SUB_MENU}
-            menu={this.props.menu}
-            subMenu={subMenu}
-            changeComponent={this.props.changeComponent}
-          />
-        );
-      });
-      return <div className={this.state.cls.subMenuCls}>{subMenus}</div>;
-    }
-  }
-  loadButtons() {
-    if (this.props.type === MAIN_MENU) {
-      return (
-        <div
-          ref="colexp"
-          id={this.props.menu.replace(/\s+/, "-")}
-          className={this.state.cls.minimizeBtnCls}
-          onClick={this.handleMinimize}
-        >
-          {this.state.data.minMax}
-        </div>
-      );
-    } else return null;
-  }
+
   handleMinimize(e) {
     let [cls, data, newCls] = [null, null, ""];
     if (this.state.data.minMax === MIN) {
@@ -80,20 +54,50 @@ class Menu extends React.Component {
     this.setState({ cls, data });
   }
 
-  handleClick(e) {
-    this.props.changeComponent({
-      type: this.props.menu,
-      algo: this.props.subMenu
-    });
+  loadSubMenus() {
+    if (this.props.type === MAIN_MENU) {
+      const subMenus = this.props.subMenus.map( (subMenu, index) => {
+        return (
+          <Menu
+            type={SUB_MENU}
+            menu={this.props.menu}
+            subMenu={subMenu}
+            changeComponent={this.props.changeComponent}
+            key={index}
+          />
+        );
+      });
+      return <div className={this.state.cls.subMenuCls}>{subMenus}</div>;
+    }
+  }
+  
+  loadButtons() {
+    if (this.props.type === MAIN_MENU) {
+      return (
+        <div
+          ref="colexp"
+          id={this.props.menu.replace(/\s+/, "-")}
+          className={this.state.cls.minimizeBtnCls}
+          onClick={this.handleMinimize}
+        >
+          {this.state.data.minMax}
+        </div>
+      );
+    } else return null;
+  }
+  
+  render() {
+    let name = "";
+    if (this.props.type === MAIN_MENU) name = this.props.menu;
+    else name = this.props.subMenu;
+    return (
+      <div ref={this.props.type} className={this.props.type}>
+        <div className="menu-title" onClick={this.handleClick}>
+          {name}
+          {this.loadButtons()}
+        </div>
+        {this.loadSubMenus()}
+      </div>
+    );
   }
 }
-
-export default Menu;
-
-const [MAIN_MENU, SUB_MENU, COLLAPSE, MIN, MAX] = [
-  "main-menu",
-  "sub-menu",
-  "sub-menu-collapse",
-  "-",
-  "+"
-];

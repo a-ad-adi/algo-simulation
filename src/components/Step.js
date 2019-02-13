@@ -4,6 +4,7 @@ import "./../css/Step.css";
 
 export default class Step extends React.Component {
   tl1;
+
   constructor(props) {
     super(props);
     this.state = {};
@@ -19,12 +20,17 @@ export default class Step extends React.Component {
   }
 
   start(e) {}
+
   pause(e) {}
+
   stop(e) {}
+
   reverse(e) {}
+
   next(e) {
     this.props.next();
   }
+  
   render() {
     return (
       <div className="Step">

@@ -5,6 +5,7 @@ import "./../css/SortSimulation.css";
 
 export default class SortSimulation extends Component {
   snapshot;
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -17,14 +18,14 @@ export default class SortSimulation extends Component {
   }
   
   componentDidMount() {
-    this.snapshot = sort(this.props.numbers);
-    console.log("SORTING NUMBERS :: ", this.snapshot);
+    this.snapshot = sort(this.props.numbers);    
     const steps = [
       <Step
         actions={this.state.showControls}
         key={this.state.stepNo}
         hasNext={true}
         next={this.getNext}
+        notify={this.props.notify}
       />
     ];
     this.setState({ steps });
@@ -39,7 +40,8 @@ export default class SortSimulation extends Component {
         <Step
           actions={this.state.showControls}
           key={this.state.stepNo}
-          hasNext={true}          
+          hasNext={true}         
+          notify={this.props.notify} 
         />
       );
       this.setState({ steps });
