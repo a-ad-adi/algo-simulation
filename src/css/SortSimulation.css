@@ -9,3 +9,13 @@
 .sort-simulation{
     text-align: left;
 }
+.sol-header{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+.steps{
+    height: 60vh;
+    overflow: auto;
+    scrollbar-width: thin;
+}

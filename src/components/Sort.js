@@ -16,6 +16,7 @@ class Sort extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.scrollToStep = this.scrollToStep.bind(this);
   }
   componentDidMount() {
     this.refs.ipnum.focus();    
@@ -49,7 +50,9 @@ class Sort extends Component {
     } else return null;
   }
   scrollToStep(){
-    this.simContainer.scrollIntoView({behavior: 'smooth'});
+    // this.simContainer.scrollIntoView({behavior: 'smooth'});
+    this.simContainer.scrollTop = this.simContainer.scrollHeight;
+    console.log("to bottom");
   }
   handleBlur(e) {
     const number = Number(e.target.value);

@@ -42,9 +42,6 @@ export default class Step extends React.Component {
           <div className="btn reverse" onClick={this.reverse}>
             Reverse
           </div>
-          <div className="btn next" onClick={this.next}>
-            Next
-          </div>
         </div>
       </div>
     );

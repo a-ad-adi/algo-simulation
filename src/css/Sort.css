@@ -40,7 +40,4 @@ input{
 
 .simulation{    
     padding: 10px;    
-    height: 70vh;
-    overflow: auto;
-    scrollbar-width: thin;
 }
