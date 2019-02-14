@@ -34,6 +34,9 @@ export default class Step extends React.Component {
   render() {
     return (
       <div className="Step">
+        <div className="s-header">
+          <p className="step-no">{this.props.data.stepNo}</p>
+        </div>
         <div className="container" />
         <div className="controls">
           <div className="btn start" onClick={this.start}>

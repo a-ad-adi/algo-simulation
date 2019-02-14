@@ -1,0 +1,28 @@
+.Notification {
+    text-align: left;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 1px 3px;
+    margin: 3px 6px 3px 2px;
+    box-shadow: 0px 0px 2px;
+  }
+  .n-header{
+    display: inline-block;       
+    box-sizing: border-box;
+    min-width: 15%;
+    margin: 1px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    background: #3335;
+  }
+  .n-body{
+    margin: 3px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    background: #3335;
+  }
+  .err{
+    border: 1px solid red;
+    box-shadow: 0px 0px 1px red;
+    /* box-shadow: none; */
+  }

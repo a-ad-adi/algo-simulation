@@ -3,7 +3,8 @@ module.exports = {
     nTypes: {
         GREET: 0,
         NOTIFY: 1,
-        DESCRIBE: 2
+        DESCRIBE: 2,
+        ERROR: 3
     }
 }
   

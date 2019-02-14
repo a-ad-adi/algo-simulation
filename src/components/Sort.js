@@ -64,6 +64,7 @@ export default class Sort extends Component {
         id: Date.now(),
         type: nTypes.NOTIFY,
         msg: `Number added ${this.state.number}`
+        // stepInfo: { id: 1, desc: "Test description" }
       });
       this.refs.ipnum.value = "";
     }

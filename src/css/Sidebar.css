@@ -5,29 +5,16 @@
 .sidebar span {
   width: 98%;
 }
-.note1 {
-  text-align: left;
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 3px 3px 8px 1px;
-  margin: 3px 3px 8px 3px;
-  box-shadow: 0px 0px 1px;
-  display: block;
-}
-
 .note-enter {
   opacity: 0.1;
 }
-
 .note-enter.note-enter-active {
   opacity: 1;
   transition: opacity 500ms ease-in;
 }
-
 .note-leave {
   opacity: 1;
 }
-
 .note-leave.note-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;

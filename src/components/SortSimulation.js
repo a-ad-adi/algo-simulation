@@ -26,14 +26,18 @@ export default class SortSimulation extends Component {
         hasNext={true}
         next={this.getNext}
         notify={this.props.notify}
+        data={{stepNo: this.state.stepNo}}
       />
     ];
     this.setState({ steps });
+    let stepNo = this.state.stepNo;
+    this.setState({ stepNo: ++stepNo });
+
   }
 
   getNext() {
     let stepNo = this.state.stepNo;
-    this.setState({ stepNo: stepNo++ });
+    this.setState({ stepNo: ++stepNo });
     if (this.state.stepNo < this.snapshot.steps.length) {
       const steps = this.state.steps;
       steps.push(
@@ -42,6 +46,7 @@ export default class SortSimulation extends Component {
           key={this.state.stepNo}
           hasNext={true}         
           notify={this.props.notify} 
+          data={{stepNo: this.state.stepNo}}
         />
       );
       this.setState({ steps });
