@@ -1,6 +1,7 @@
 .sidebar {
   background: grey;
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 .sidebar span {
   width: 98%;

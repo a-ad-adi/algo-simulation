@@ -18,25 +18,28 @@ export default class Notification extends Component {
   }
   getBody() {
     const data = this.props.data;
-
     if (data.type === nTypes.DESCRIBE)
       return (
         <div>
-          <div className="n-header">{data.stepInfo.id}</div>
-          <p className="n-body">{data.stepInfo.desc}</p>
+          <div className="n-header">Step {data.stepInfo.stepNo}</div>
+          <p className="n-body">{this.loadDesc(data.stepInfo.desc)}</p>
         </div>
       );
     else if (data.type === nTypes.ERROR) {
       return (
         <div>
           <div className="n-header">{data.err.name}</div>
-          <p className="n-body">{data.err.desc}</p>
+          <p className="n-body">{this.loadDesc(data.stepInfo.desc)}</p>
         </div>
       );
     } else if (data.type === nTypes.NOTIFY)
       return <p>{data.msg}</p>;    
   }
-
+  
+  loadDesc(desc) {
+    return desc.map(d => <p>{d}</p>)
+  }
+  
   render() {
     return <div className={this.state.cls}>{this.getBody()}</div>;
   }

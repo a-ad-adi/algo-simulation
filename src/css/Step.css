@@ -11,7 +11,17 @@
     position: relative;
     border: 1px solid grey;    
 }
-.Step .container{
+.step-no{
+    display: inline-block;       
+    box-sizing: border-box;
+    min-width: 10%;
+    margin: 1px;
+    padding: 6px;
+    border-radius: 5px;
+    background: #696758;
+    font-size: 1.2em;    
+}
+.Step .s-body{
     min-height: 200px;
     max-height: 500px;    
 }

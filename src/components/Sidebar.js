@@ -15,26 +15,38 @@ export default class Sidebar extends Component {
     return this.state.notifications.map((n, i) => {
       if (n.type === nTypes.GREET || n.type === nTypes.NOTIFY) {
         const id = n.id;
-        setTimeout(id => {
+        // setTimeout(id => {
+        //   let ind = this.state.notifications.find(note => note.id === id);
+        //   let notes = this.state.notifications;
+        //   notes.splice(ind, 1);
+        //   this.setState({ noticiations: notes });
+        // }, n.timeOut);
+
+        this.setNotificationTimeOut(n).then((id) => {
+          // console.log("after waiting : ");
           let ind = this.state.notifications.find(note => note.id === id);
           let notes = this.state.notifications;
           notes.splice(ind, 1);
           this.setState({ noticiations: notes });
-        }, n.timeOut);
-      }
-      // return (
-      //   <div
-      //     key={n.id}
-      //     className="note1"
-      //   >
-      //     {n.msg}
-      //   </div>
-      // );
 
+        }).catch((err) => {
+          console.log("Error removing notification.\n", err);
+        })
+      }
       return (
         <Notification key={n.id} data={n} />
       );
     });
+  }
+
+  setNotificationTimeOut(n){
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // console.log(`waiting for ${n.timeOut} mSec`);
+        resolve();
+        return n.id;
+      }, n.timeOut);
+    })
   }
 
   render() {

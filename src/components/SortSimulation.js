@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { sort } from "./../algorithms/mergeSort";
 import Step from "./Step";
 import "./../css/SortSimulation.css";
+import { nTypes } from "./../util/GlobalVars";
+import uuid from "uuid/v1";
 
 export default class SortSimulation extends Component {
   snapshot;
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,9 +18,9 @@ export default class SortSimulation extends Component {
     };
     this.getNext = this.getNext.bind(this);
   }
-  
+
   componentDidMount() {
-    this.snapshot = sort(this.props.numbers);    
+    this.snapshot = sort(this.props.numbers);
     const steps = [
       <Step
         actions={this.state.showControls}
@@ -26,13 +28,16 @@ export default class SortSimulation extends Component {
         hasNext={true}
         next={this.getNext}
         notify={this.props.notify}
-        data={{stepNo: this.state.stepNo}}
+        header={{ stepNo: this.state.stepNo }}
+        body={this.snapshot}
       />
     ];
     this.setState({ steps });
     let stepNo = this.state.stepNo;
+    const iid = uuid();
+    const stepDetails = this.snapshot.steps[this.state.stepNo];
+    this.props.notify({ id: iid, type: nTypes.DESCRIBE, stepInfo: {stepNo, ...stepDetails}});
     this.setState({ stepNo: ++stepNo });
-
   }
 
   getNext() {
@@ -44,12 +49,15 @@ export default class SortSimulation extends Component {
         <Step
           actions={this.state.showControls}
           key={this.state.stepNo}
-          hasNext={true}         
-          notify={this.props.notify} 
-          data={{stepNo: this.state.stepNo}}
+          hasNext={true}
+          notify={this.props.notify}
+          header={{stepNo: this.state.stepNo }}
+          body={this.snapshot}
         />
       );
       this.setState({ steps });
+      const stepDetails = this.snapshot.steps[this.state.stepNo];
+      this.props.notify({ id: uuid(), type: nTypes.DESCRIBE, stepInfo: {stepNo: this.state.stepNo, ...stepDetails}});
     } else {
       console.log("Notify done..");
     }

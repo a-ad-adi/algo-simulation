@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import Menubar from "./Menubar";
 import Notification from "./Notification";
 import { nTypes } from "./../util/GlobalVars";
-
+import uuid from "uuid";
 import "./../css/App.css";
 
 export default class App extends Component {
@@ -17,7 +17,7 @@ export default class App extends Component {
       },
       notifications: [
         {
-          id: Date.now(),
+          id: uuid(),
           timeOut: 2000,
           type: nTypes.NOTIFY,
           msg: "Hi there..!!"
@@ -43,15 +43,16 @@ export default class App extends Component {
 
   notify(n) {
     let notifications = this.state.notifications;
-    if (n.type === nTypes.DESCRIBE) {
-      const { id, type, stepInfo } = n;
+    const { id, type } = n;
+    if (type === nTypes.DESCRIBE) {
+      const { stepInfo } = n;
       notifications.push({ id, type, stepInfo });
-    } else if (n.type === nTypes.ERROR) {
-      const { id, type, timeOut, err } = n;
+    } else if (type === nTypes.ERROR) {
+      const { timeOut = 2000, err } = n;
       notifications.push({ id, type, timeOut, err });
-    } else if (n.type === nTypes.NOTIFY) {
-      const { id, timeOut = 2000, type, msg } = n;
-      notifications.push({ id, timeOut, type, msg });
+    } else if (type === nTypes.NOTIFY) {
+      const { timeOut = 2000, msg } = n;
+      notifications.push({ id, type, timeOut, msg });
     }
     this.setState({ notifications });
   }

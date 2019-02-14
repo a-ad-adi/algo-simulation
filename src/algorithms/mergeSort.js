@@ -24,16 +24,25 @@ function merge(a, start, mid, end) {
 function mergeSort(a, l, r) {
   if (l < r) {
     const m = parseInt((l + r) / 2);
-    snapshot.steps.push({id: c++,type: "split", start: l, end: m });
+    logSplit(c++, "split", l, m);
     mergeSort(a, l, m);
-    snapshot.steps.push({id: c++,type: "split", start: m+1, end: r });
+    logSplit(c++, "split", m+1, r);
     mergeSort(a, m + 1, r);
-    snapshot.steps.push({id: c++,type: "merge", start: l, mid: m, end: r });
+    logMerge(c++, "merge", l, m, r);
     merge(a, l, m, r);
     console.log(a);
   }
 }
 
+function logSplit(id, type, start, end){
+  const desc = [`Phase: Split`, `mergeSort(arr, ${start}, ${end})`];
+  snapshot.steps.push({id, type, start, end, desc});
+}
+
+function logMerge(id, type, start, mid, end){
+  const desc = [`Phase: Merge`, `merge(arr, ${start}, ${mid}, ${end})`];
+  snapshot.steps.push({id, type, start, mid, end, desc});
+}
 module.exports = {
     sort: (arr) => {    
     snapshot.ipArr = arr;    

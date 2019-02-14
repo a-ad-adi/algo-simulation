@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import SortSimulation from "./SortSimulation";
+import { nTypes } from "./../util/GlobalVars";
+import uuid from "uuid/v1";
 import "./../css/Menu.css";
 import "./../css/Sort.css";
-import { nTypes } from "./../util/GlobalVars";
 
 //validation notifications
 const [NO_NUMBERS, INVALID_NO, LIMIT_EXCEED] = [
@@ -39,10 +40,10 @@ export default class Sort extends Component {
 
   handleClick(e) {
     if (this.state.numbers.length) {
-      this.setState({ isReady: true });
+      this.setState({ isReady: true });      
     } else {
       this.props.notify({
-        id: Date.now(),
+        id: uuid(),
         timeOut: 5000,
         type: nTypes.NOTIFY,
         msg: NO_NUMBERS
@@ -60,12 +61,11 @@ export default class Sort extends Component {
         <div className="number">{num}</div>
       ));
       this.setState({ list });
-      this.props.notify({
-        id: Date.now(),
-        type: nTypes.NOTIFY,
-        msg: `Number added ${this.state.number}`
-        // stepInfo: { id: 1, desc: "Test description" }
-      });
+      // this.props.notify({
+      //   id: uuid(),
+      //   type: nTypes.NOTIFY,
+      //   msg: `Number added ${this.state.number}`
+      // });
       this.refs.ipnum.value = "";
     }
   }
@@ -92,7 +92,7 @@ export default class Sort extends Component {
     const number = this.state.number;
     if (!Number(number)) {
       this.props.notify({
-        id: Date.now(),
+        id: uuid(),
         type: nTypes.NOTIFY,
         msg: INVALID_NO
       });
@@ -100,7 +100,7 @@ export default class Sort extends Component {
     }
     if (len === 5) {
       this.props.notify({
-        id: Date.now(),
+        id: uuid(),
         timeOut: 5000,
         type: nTypes.NOTIFY,
         msg: LIMIT_EXCEED

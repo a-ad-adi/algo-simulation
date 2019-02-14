@@ -35,9 +35,9 @@ export default class Step extends React.Component {
     return (
       <div className="Step">
         <div className="s-header">
-          <p className="step-no">{this.props.data.stepNo}</p>
+          <p className="step-no">Step {this.props.header.stepNo}</p>
         </div>
-        <div className="container" />
+        <div className="s-body" />
         <div className="controls">
           <div className="btn start" onClick={this.start}>
             Start
