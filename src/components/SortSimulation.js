@@ -21,6 +21,7 @@ export default class SortSimulation extends Component {
 
   componentDidMount() {
     this.snapshot = sort(this.props.numbers);
+    // console.log(this.snapshot);
     const steps = [
       <Step
         actions={this.state.showControls}
@@ -29,7 +30,7 @@ export default class SortSimulation extends Component {
         next={this.getNext}
         notify={this.props.notify}
         header={{ stepNo: this.state.stepNo }}
-        body={this.snapshot}
+        body={this.snapshot.steps[this.state.stepNo]}
       />
     ];
     this.setState({ steps });
@@ -52,7 +53,7 @@ export default class SortSimulation extends Component {
           hasNext={true}
           notify={this.props.notify}
           header={{stepNo: this.state.stepNo }}
-          body={this.snapshot}
+          body={this.snapshot.steps[this.state.stepNo]}
         />
       );
       this.setState({ steps });

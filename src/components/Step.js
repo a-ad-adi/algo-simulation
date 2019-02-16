@@ -1,31 +1,59 @@
 import React, { Fragment } from "react";
-import { Tween, Timeline, Controls } from "react-gsap";
 import "./../css/Step.css";
+import MergeSortTimeline from "./MergeSort_Timeline";
 
 export default class Step extends React.Component {
-  tl1;
+  timeLineRefs = [];
 
   constructor(props) {
     super(props);
     this.state = {};
-    this.start = this.start.bind(this);
+    this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
     this.stop = this.stop.bind(this);
     this.reverse = this.reverse.bind(this);
     this.next = this.next.bind(this);
     this.scrollToStep = this.scrollToStep.bind(this);
+    this.loadAnimation = this.loadAnimation.bind(this);
+    this.getRef = this.getRef.bind(this);
   }
+  
+  getRef(ref){
+    this.timeLineRefs.push(ref);
+  }
+  
   scrollToStep() {
     this.stepRef.scrollIntoView({ behavior: "smooth" });
   }
 
-  start(e) {}
+  loadAnimation(){
+    console.log("loading animation..");
+    return <MergeSortTimeline data={this.props.body} getRef={this.getRef} />;
+  }
+  play(e) {
+    this.timeLineRefs.map(t => {
+      t.getGSAP().play();
+    });
+  }
 
-  pause(e) {}
+  pause(e) {
+    this.timeLineRefs.map(t => {
+      t.getGSAP().pause();
+    });
+  }
 
-  stop(e) {}
+  stop(e) {
+    this.timeLineRefs.map(t => {
+      t.getGSAP().stop();
+    });
 
-  reverse(e) {}
+  }
+
+  reverse(e) {
+    this.timeLineRefs.map(t => {
+      t.getGSAP().reverse();
+    });
+  }
 
   next(e) {
     this.props.next();
@@ -37,10 +65,12 @@ export default class Step extends React.Component {
         <div className="s-header">
           <p className="step-no">Step {this.props.header.stepNo}</p>
         </div>
-        <div className="s-body" />
+        <div className="s-body">
+          {this.loadAnimation()}
+        </div>
         <div className="controls">
-          <div className="btn start" onClick={this.start}>
-            Start
+          <div className="btn start" onClick={this.play}>
+            Play
           </div>
           <div className="btn pause" onClick={this.pause}>
             Pause

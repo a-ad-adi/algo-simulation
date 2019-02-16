@@ -21,7 +21,8 @@ export default class Sort extends Component {
       number: null,
       numbers: [],
       list: [],
-      isReady: false
+      isReady: false,
+      readyState: []
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
@@ -56,7 +57,7 @@ export default class Sort extends Component {
     if (this.isValidInput()) {
       let numbers = this.state.numbers;
       numbers.push(this.state.number);
-      this.setState({ numbers });
+      this.setState({ numbers });      
       let list = this.state.numbers.map(num => (
         <div className="number">{num}</div>
       ));
@@ -71,6 +72,7 @@ export default class Sort extends Component {
   }
 
   simulate() {
+    const nn = this.state.numbers;
     if (this.state.isReady) {
       return (
         <SortSimulation

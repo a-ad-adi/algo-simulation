@@ -1,0 +1,8 @@
+.wrapper{
+    display: inline-block;
+    /* display: flex; */
+    margin: auto;
+}
+.split-container{
+    text-align: center;
+}
