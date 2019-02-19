@@ -13,8 +13,6 @@ const [NO_NUMBERS, INVALID_NO, LIMIT_EXCEED] = [
 ];
 
 export default class Sort extends Component {
-  simContainer;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +25,6 @@ export default class Sort extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.scrollToStep = this.scrollToStep.bind(this);
   }
 
   componentDidMount() {
@@ -84,11 +81,6 @@ export default class Sort extends Component {
     } else return null;
   }
 
-  scrollToStep() {
-    // this.simContainer.scrollIntoView({behavior: 'smooth'});
-    this.simContainer.scrollTop = this.simContainer.scrollHeight;
-  }
-
   isValidInput() {
     const len = this.state.numbers.length;
     const number = this.state.number;
@@ -130,7 +122,7 @@ export default class Sort extends Component {
           </form>
         </div>
         <hr />
-        <div className="simulation" ref={ref => (this.simContainer = ref)}>
+        <div className="simulation">
           {this.simulate()}
         </div>
       </div>

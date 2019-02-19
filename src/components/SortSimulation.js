@@ -6,7 +6,7 @@ import { nTypes } from "./../util/GlobalVars";
 import uuid from "uuid/v1";
 
 export default class SortSimulation extends Component {
-  snapshot;
+  snapshot; containerEnd;
 
   constructor(props) {
     super(props);
@@ -37,10 +37,16 @@ export default class SortSimulation extends Component {
     let stepNo = this.state.stepNo;
     const iid = uuid();
     const stepDetails = this.snapshot.steps[this.state.stepNo];
-    this.props.notify({ id: iid, type: nTypes.DESCRIBE, stepInfo: {stepNo, ...stepDetails}});
-    this.setState({ stepNo: ++stepNo });
+    this.props.notify({
+      id: iid,
+      type: nTypes.DESCRIBE,
+      stepInfo: { stepNo, ...stepDetails }
+    });
+    this.setState({ stepNo: ++stepNo });    
   }
-
+  componentDidUpdate(){
+    this.scrollToStep();
+  }
   getNext() {
     let stepNo = this.state.stepNo;
     this.setState({ stepNo: ++stepNo });
@@ -52,17 +58,29 @@ export default class SortSimulation extends Component {
           key={this.state.stepNo}
           hasNext={true}
           notify={this.props.notify}
-          header={{stepNo: this.state.stepNo }}
-          body={this.snapshot.steps[this.state.stepNo]}
+          header={{ stepNo: this.state.stepNo }}
+          body={this.snapshot.steps[this.state.stepNo]}          
         />
       );
       this.setState({ steps });
       const stepDetails = this.snapshot.steps[this.state.stepNo];
-      this.props.notify({ id: uuid(), type: nTypes.DESCRIBE, stepInfo: {stepNo: this.state.stepNo, ...stepDetails}});
+      this.props.notify({
+        id: uuid(),
+        type: nTypes.DESCRIBE,
+        stepInfo: { stepNo: this.state.stepNo, ...stepDetails }
+      });
     } else {
-      console.log("Notify done..");
-    }
-    this.props.scrollToStep();
+      this.props.notify({
+        id: uuid(),
+        type: nTypes.NOTIFY,
+        msg: "Sort completed.."
+      });
+    }    
+  }
+
+  scrollToStep() {
+    if (this.containerEnd)
+      this.containerEnd.scrollIntoView({ behavior: "smooth" });
   }
 
   render() {
@@ -79,7 +97,10 @@ export default class SortSimulation extends Component {
             Next
           </div>
         </div>
-        <div className="steps">{this.state.steps}</div>
+        <div className="sol-body">
+          <div className="steps">{this.state.steps}</div>
+          <div className="containerEnd" ref={ref => (this.containerEnd = ref)}></div>
+        </div>
       </div>
     );
   }

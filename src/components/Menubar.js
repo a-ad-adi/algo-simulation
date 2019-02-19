@@ -62,14 +62,14 @@ export default class Menubar extends Component {
     });
   }
 
-  render() {
+  render() {    
     return (
       <div className="menubar section-header">
         {this.state.data.title}
         <span className="min-btn" onClick={this.handleClick}>
           {this.state.data.minMax}
         </span>
-        <div className={this.state.cls.menubarCls}>{this.loadMenus()}</div>
+        <div className={this.state.cls.menubarCls}>{this.loadMenus()}</div>                
       </div>
     );
   }

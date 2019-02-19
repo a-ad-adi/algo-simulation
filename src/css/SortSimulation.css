@@ -14,8 +14,13 @@
     align-items: baseline;
     justify-content: space-between;
 }
-.steps{
+.sol-body{
     height: 60vh;
     overflow: auto;
     scrollbar-width: thin;
+}
+.steps{
+    /* height: 60vh;
+    overflow: auto;
+    scrollbar-width: thin; */
 }
