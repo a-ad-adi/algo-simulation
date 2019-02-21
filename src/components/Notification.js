@@ -22,14 +22,14 @@ export default class Notification extends Component {
       return (
         <div>
           <div className="n-header">Step {data.stepInfo.stepNo}</div>
-          <p className="n-body">{this.loadDesc(data.stepInfo.desc)}</p>
+          <div className="n-body">{this.loadDesc(data.stepInfo.desc)}</div>
         </div>
       );
     else if (data.type === nTypes.ERROR) {
       return (
         <div>
           <div className="n-header">{data.err.name}</div>
-          <p className="n-body">{this.loadDesc(data.stepInfo.desc)}</p>
+          <div className="n-body">{this.loadDesc(data.stepInfo.desc)}</div>
         </div>
       );
     } else if (data.type === nTypes.NOTIFY)
@@ -37,7 +37,7 @@ export default class Notification extends Component {
   }
   
   loadDesc(desc) {
-    return desc.map(d => <p>{d}</p>)
+    return desc.map( (d, i) => <p key={i}>{d}</p>)
   }
   
   render() {

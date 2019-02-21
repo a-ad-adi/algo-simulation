@@ -47,7 +47,6 @@ export default class Sidebar extends Component {
   setNotificationTimeOut(n) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // console.log(`waiting for ${n.timeOut} mSec`);
         resolve();
         return n.id;
       }, n.timeOut);
@@ -56,8 +55,7 @@ export default class Sidebar extends Component {
 
   scrollToNotification() {
     if (this.containerEnd) {
-      this.containerEnd.scrollIntoView({ behavior: "smooth" });
-      console.log("sidebar updated..");
+      this.containerEnd.scrollIntoView({ behavior: "smooth" });      
     }
   }
 

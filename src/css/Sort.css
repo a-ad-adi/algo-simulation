@@ -11,6 +11,10 @@ input{
     font-size: 40px;
     margin: 5px 10px 5px 5px;
 }
+input.btn{
+    background: none;
+    border-radius: 0px;
+}
 .number{
     padding: 5px 10px;
     border-radius: 8px;
@@ -20,10 +24,10 @@ input{
     text-align: center;
     margin: 2px;
 }
-.actions{
+.input-actions{
     float: right;
 }
-.actions input {
+.input-actions input {
     height: 30px;    
     font-size: 1em;
 

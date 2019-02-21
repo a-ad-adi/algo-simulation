@@ -17,57 +17,54 @@ export default class Step extends React.Component {
     this.loadAnimation = this.loadAnimation.bind(this);
     this.getRef = this.getRef.bind(this);
   }
-  
-  getRef(ref){
+
+  getRef(ref) {
     this.timeLineRefs.push(ref);
   }
-  
+
   scrollToStep() {
     this.stepRef.scrollIntoView({ behavior: "smooth" });
   }
 
-  loadAnimation(){
-    console.log("loading animation..");
+  loadAnimation() {
     return <MergeSortTimeline data={this.props.body} getRef={this.getRef} />;
   }
   play(e) {
     this.timeLineRefs.map(t => {
-      t.getGSAP().play();
+      if (t) t.getGSAP().play();
     });
   }
 
   pause(e) {
     this.timeLineRefs.map(t => {
-      t.getGSAP().pause();
+      if (t) t.getGSAP().pause();
     });
   }
 
   stop(e) {
     this.timeLineRefs.map(t => {
-      t.getGSAP().stop();
+      if (t) t.getGSAP().stop();
     });
-
   }
 
   reverse(e) {
+    // console.log(this.timeLineRefs);
     this.timeLineRefs.map(t => {
-      t.getGSAP().reverse();
+      if (t) t.getGSAP().reverse();
     });
   }
 
   next(e) {
     this.props.next();
   }
-  
+
   render() {
     return (
       <div className="Step">
         <div className="s-header">
           <p className="step-no">Step {this.props.header.stepNo}</p>
         </div>
-        <div className="s-body">
-          {this.loadAnimation()}
-        </div>
+        <div className="s-body">{this.loadAnimation()}</div>
         <div className="controls">
           <div className="btn start" onClick={this.play}>
             Play

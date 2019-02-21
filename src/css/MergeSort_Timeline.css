@@ -1,8 +1,19 @@
-.wrapper{
-    display: inline-block;
-    /* display: flex; */
-    margin: auto;
+.wrapper {
+  display: inline-block;
+  margin: auto;
 }
-.split-container{
-    text-align: center;
+.split-container,
+.merge-container {
+  text-align: center;
+}
+.left-half, .right-half{
+    display: flex;
+}
+.two-halves {
+  text-align: left;
+  display: inline-block;
+}
+.icon {
+  margin: 0px 10px;
+  transform: scale(2, 2);
 }

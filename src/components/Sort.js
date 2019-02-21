@@ -55,8 +55,8 @@ export default class Sort extends Component {
       let numbers = this.state.numbers;
       numbers.push(this.state.number);
       this.setState({ numbers });      
-      let list = this.state.numbers.map(num => (
-        <div className="number">{num}</div>
+      let list = this.state.numbers.map((num, index) => (
+        <div className="number" key={index} >{num}</div>
       ));
       this.setState({ list });
       // this.props.notify({
@@ -108,7 +108,7 @@ export default class Sort extends Component {
     return (
       <div className="sort">
         <div className="init">
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={this.handleSubmit} autocomplete="off">
             <input
               type="text"
               name="ipnum"
@@ -116,8 +116,8 @@ export default class Sort extends Component {
               onChange={this.handleBlur}
             />
             <div className="list">{this.state.list}</div>
-            <div className="actions">
-              <input type="button" value="done" onClick={this.handleClick} />
+            <div className="input-actions">
+              <input class= "btn" type="button" value="done" autocomplete="off" onClick={this.handleClick} />
             </div>
           </form>
         </div>

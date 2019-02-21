@@ -6,7 +6,8 @@ import { nTypes } from "./../util/GlobalVars";
 import uuid from "uuid/v1";
 
 export default class SortSimulation extends Component {
-  snapshot; containerEnd;
+  snapshot;
+  containerEnd;
 
   constructor(props) {
     super(props);
@@ -21,7 +22,7 @@ export default class SortSimulation extends Component {
 
   componentDidMount() {
     this.snapshot = sort(this.props.numbers);
-    // console.log(this.snapshot);
+
     const steps = [
       <Step
         actions={this.state.showControls}
@@ -42,9 +43,9 @@ export default class SortSimulation extends Component {
       type: nTypes.DESCRIBE,
       stepInfo: { stepNo, ...stepDetails }
     });
-    this.setState({ stepNo: ++stepNo });    
+    this.setState({ stepNo: ++stepNo });
   }
-  componentDidUpdate(){
+  componentDidUpdate() {
     this.scrollToStep();
   }
   getNext() {
@@ -59,7 +60,7 @@ export default class SortSimulation extends Component {
           hasNext={true}
           notify={this.props.notify}
           header={{ stepNo: this.state.stepNo }}
-          body={this.snapshot.steps[this.state.stepNo]}          
+          body={this.snapshot.steps[this.state.stepNo]}
         />
       );
       this.setState({ steps });
@@ -75,7 +76,7 @@ export default class SortSimulation extends Component {
         type: nTypes.NOTIFY,
         msg: "Sort completed.."
       });
-    }    
+    }
   }
 
   scrollToStep() {
@@ -84,22 +85,34 @@ export default class SortSimulation extends Component {
   }
 
   render() {
-    const numbers = this.props.numbers.map(n => {
-      return <div className="num">{n}</div>;
+    const numbers = this.props.numbers.map((n, i) => {
+      return (
+        <div className="num" key={i}>
+          {n}
+        </div>
+      );
     });
     return (
       <div className="sort-simulation">
         <div className="sol-header">
-          <div>
-            <p>Input: {numbers}</p>
+          <div className="basic-info">
+            <div>Input: {numbers}</div>
           </div>
-          <div className="btn next" onClick={this.getNext}>
-            Next
+          <div className="animate-actions">
+            <div className="btn autoplay">
+              Autoplay
+            </div>
+            <div className="btn next" onClick={this.getNext}>
+              Next
+            </div>
           </div>
         </div>
         <div className="sol-body">
           <div className="steps">{this.state.steps}</div>
-          <div className="containerEnd" ref={ref => (this.containerEnd = ref)}></div>
+          <div
+            className="containerEnd"
+            ref={ref => (this.containerEnd = ref)}
+          />
         </div>
       </div>
     );
