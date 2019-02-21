@@ -1,7 +1,5 @@
 import React, { Fragment } from "react";
 import { Tween, Timeline, Controls } from "react-gsap";
-import styled from "styled-components";
-import { sort } from "./../../algorithms/mergeSort";
 
 export default class Gsap extends React.Component {
   tween;
@@ -11,13 +9,6 @@ export default class Gsap extends React.Component {
   }
 
   render() {
-    const elem = styled.div`
-      width: 100px;
-      height: 100px;
-      background: black;
-      position: relative;
-    `;
-
     return (
       <div className="gsap">
         <Controls>

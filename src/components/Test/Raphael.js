@@ -3,13 +3,7 @@ const {
   Raphael,
   Paper,
   Set,
-  Circle,
-  Ellipse,
-  Image,
-  Rect,
-  Text,
-  Path,
-  Line
+  Circle
 } = require("react-raphael");
 
 class RaphaelCmp extends Component {
@@ -98,19 +92,6 @@ class RaphaelCmp extends Component {
 }
 
 export default RaphaelCmp;
-
-const start = function() {
-  this.attr("opacity", 0.2);
-  this.data("ox", this.attr("cx"));
-  this.data("oy", this.attr("cy"));
-};
-const end = function() {
-  this.attr("opacity", 1);
-};
-const move = function(dx, dy, mx, my, ev) {
-  this.attr("cx", this.data("ox") + dx);
-  this.attr("cy", this.data("oy") + dy);
-};
 
 const anm1 = function() {
     alert();

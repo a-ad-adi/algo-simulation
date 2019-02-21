@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Sort from "./Sort";
+import Sort from "./algorithms/sort/SortInput";
 import ShortestPath from "./ShortestPath";
 
 import "./../css/Main.css";

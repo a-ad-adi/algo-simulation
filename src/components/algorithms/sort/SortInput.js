@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import SortSimulation from "./SortSimulation";
-import { nTypes } from "./../util/GlobalVars";
+import SortSimulation from "./SortSimulationContainer";
+import { nTypes } from "../../../util/GlobalVars";
 import uuid from "uuid/v1";
-import "./../css/Menu.css";
-import "./../css/Sort.css";
+import "../../../css/Menu.css";
+import "../../../css/Sort.css";
 
 //validation notifications
 const [NO_NUMBERS, INVALID_NO, LIMIT_EXCEED] = [
@@ -69,7 +69,6 @@ export default class Sort extends Component {
   }
 
   simulate() {
-    const nn = this.state.numbers;
     if (this.state.isReady) {
       return (
         <SortSimulation

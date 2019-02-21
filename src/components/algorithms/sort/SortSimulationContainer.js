@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { sort } from "./../algorithms/mergeSort";
-import Step from "./Step";
-import "./../css/SortSimulation.css";
-import { nTypes } from "./../util/GlobalVars";
+import { sort } from "../../../algorithms/mergeSort";
+import Step from "../../Step";
+import { nTypes } from "../../../util/GlobalVars";
 import uuid from "uuid/v1";
+
+import "../../../css/SortSimulation.css";
 
 export default class SortSimulation extends Component {
   snapshot;

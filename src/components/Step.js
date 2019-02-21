@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
+import MergeSortTimeline from "./algorithms/sort/MergeSort_Timeline";
+
 import "./../css/Step.css";
-import MergeSortTimeline from "./MergeSort_Timeline";
 
 export default class Step extends React.Component {
   timeLineRefs = [];

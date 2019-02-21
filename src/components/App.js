@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Main from "./Main";
 import Sidebar from "./Sidebar";
 import Menubar from "./Menubar";
-import Notification from "./Notification";
 import { nTypes } from "./../util/GlobalVars";
 import uuid from "uuid";
 import "./../css/App.css";

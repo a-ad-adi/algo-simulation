@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
-import { sortAlgo, csses } from "../util/GlobalVars";
+import { sortAlgo, csses } from "../../../util/GlobalVars";
+import { getInlineCss } from "../../../util/css_modifier";
 import { Tween, Timeline } from "react-gsap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { getInlineCss } from "../util/css_modifier";
 
-import "../css/MergeSort_Timeline.css";
+import "../../../css/MergeSort_Timeline.css";
 
 export default class animateMergeSort extends Component {
   numRefs = [];
@@ -32,7 +32,7 @@ export default class animateMergeSort extends Component {
 
   setTweens(coords) {
     let [ tweens, delay ] = [[], 0];
-    coords.map((e, i) => {
+    coords.forEach((e, i) => {
       const tween = <Tween to={{ x: e.x, y: e.y, delay: delay++ }} />;
       tweens.push(tween);
     })    
