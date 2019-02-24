@@ -4,7 +4,7 @@ import Step from "../../Step";
 import { nTypes } from "../../../util/GlobalVars";
 import uuid from "uuid/v1";
 
-import "../../../css/SortSimulation.css";
+import "../../../css/SortSimulationContainer.css";
 
 export default class SortSimulation extends Component {
   snapshot;
@@ -19,6 +19,7 @@ export default class SortSimulation extends Component {
       showControls: true
     };
     this.getNext = this.getNext.bind(this);
+    this.loadAlgorithm = this.loadAlgorithm.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +86,16 @@ export default class SortSimulation extends Component {
       this.containerEnd.scrollIntoView({ behavior: "smooth" });
   }
 
+  loadAlgorithm() {
+    return this.props.algo.map(e => {
+      return (
+        <div className={e.phase}>
+          <pre>{e.code}</pre>
+        </div>
+      );
+    });
+  }
+
   render() {
     const numbers = this.props.numbers.map((n, i) => {
       return (
@@ -97,12 +108,12 @@ export default class SortSimulation extends Component {
       <div className="sort-simulation">
         <div className="sol-header">
           <div className="basic-info">
+            <div className="section-header">Basic information: </div>
             <div>Input: {numbers}</div>
+            <div className="algorithm">{this.loadAlgorithm()}</div>
           </div>
           <div className="animate-actions">
-            <div className="btn autoplay">
-              Autoplay
-            </div>
+            <div className="btn autoplay">Autoplay</div>
             <div className="btn next" onClick={this.getNext}>
               Next
             </div>

@@ -15,6 +15,20 @@ input.btn{
     background: none;
     border-radius: 0px;
 }
+.input-menubar{
+    text-align: right;
+}
+.input-menubar .minmax-btn{
+    display: inline-block;
+    cursor: pointer;
+    margin: 2px;
+    padding: 2px;    
+}
+.minmax-btn .icon{
+    font-size: 10px;
+    transform: scale(1,1);
+}
+
 .number{
     padding: 5px 10px;
     border-radius: 8px;

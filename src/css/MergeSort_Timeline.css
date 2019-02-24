@@ -17,3 +17,12 @@
   margin: 0px 10px;
   transform: scale(2, 2);
 }
+.algorithm{
+  display: flex;
+  justify-content: space-evenly;
+}
+.algorithm pre{
+  max-height: 20vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}

@@ -31,3 +31,17 @@
 .sidebar{
   width: 25vw;
 }
+
+.h-scale-zero{
+  transition: 100ms all;
+  transform: scale(0, 1);
+  transform-origin: left;
+}
+.v-scale-zero{
+  transition: 100ms all;
+  transform: scale(1, 0);
+  transform-origin: top;
+}
+.disp-none{
+  display: none;
+}

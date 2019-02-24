@@ -14,6 +14,12 @@ module.exports = {
       MERGE: 1
     }
   },
+  actions: {
+    HMIN: 0,
+    VMIN: 1,
+    HMAX: 2,
+    VMAX: 3
+  },
   csses: {
     num: [
       { prop: "margin", val: 1, dim: "px" },

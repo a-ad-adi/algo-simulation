@@ -1,0 +1,14 @@
+{
+    "reactapp": {
+        "awscloudformation": {
+            "AuthRoleName": "algorithm-simulation-20190222160040-authRole",
+            "UnauthRoleArn": "arn:aws:iam::998602770826:role/algorithm-simulation-20190222160040-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::998602770826:role/algorithm-simulation-20190222160040-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "algorithm-simulation-20190222160040-deployment",
+            "UnauthRoleName": "algorithm-simulation-20190222160040-unauthRole",
+            "StackName": "algorithm-simulation-20190222160040",
+            "StackId": "arn:aws:cloudformation:us-east-2:998602770826:stack/algorithm-simulation-20190222160040/e9cd9ac0-36e4-11e9-806c-02278d0d93fc"
+        }
+    }
+}

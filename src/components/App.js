@@ -7,9 +7,9 @@ import uuid from "uuid";
 import "./../css/App.css";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faTimes);
+library.add(...[faTimes, faPlus, faMinus]);
 
 export default class App extends Component {
   constructor(props) {
