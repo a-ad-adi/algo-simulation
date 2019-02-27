@@ -14,8 +14,11 @@ const [NO_NUMBERS, INVALID_NO, LIMIT_EXCEED] = [
   "We have enough numbers to start with the simulation. Lets start!! Press Done.."
 ];
 
+const [INPUT, ANIM_HEADER, ANIM_BODY] = [0, 1, 2];
 
 export default class Sort extends Component {
+  headerRef;
+  simRef;
   constructor(props) {
     super(props);
     this.state = {
@@ -31,6 +34,9 @@ export default class Sort extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.getInputRef = this.getInputRef.bind(this);
+    this.getHeaderRef = this.getHeaderRef.bind(this);
+    this.getSimRef = this.getSimRef.bind(this);
     this.scaleToZero = this.scaleToZero.bind(this);
     this.scaleToNormal = this.scaleToNormal.bind(this);
     this.displayNone = this.displayNone.bind(this);
@@ -75,6 +81,17 @@ export default class Sort extends Component {
     }
   }
 
+  getInputRef(ref) {
+    this.inputRef = { ref, min: false };
+  }
+  getHeaderRef(ref) {
+    this.headerRef = { ref, min: false };
+  }
+
+  getSimRef(ref) {
+    this.simRef = { ref, min: false };
+  }
+
   simulate() {
     if (this.state.isReady) {
       console.log(ALGO);
@@ -84,6 +101,14 @@ export default class Sort extends Component {
           algo={ALGO}
           scrollToStep={this.scrollToStep}
           notify={this.props.notify}
+          MinimizeHeader={this.getHeaderRef}
+          minimizeSimulation={this.getSimRef}
+          headerSection={ANIM_HEADER}
+          animSection={ANIM_BODY}
+          scaleToZero={this.scaleToZero}
+          scaleToNormal={this.scaleToNormal}
+          displayNone={this.displayNone}
+          displayVisible={this.displayVisible}
         />
       );
     } else return null;
@@ -112,35 +137,46 @@ export default class Sort extends Component {
     return true;
   }
 
-  scaleToZero() {
-    const newCls = clsUtil.getClsList(this.state.cls.inputArea).addCls("v-scale-zero")
-    .clsStr;
-    this.setState({cls: {inputArea: newCls}});
+  scaleToZero(section) {
+    const newCls = clsUtil
+      .getClsList(this.state.cls.inputArea)
+      .addCls("v-scale-zero").clsStr;
+    this.setState({ cls: { inputArea: newCls } });
   }
-  scaleToNormal(){
-    const newCls = clsUtil.getClsList(this.state.cls.inputArea).removeCls("v-scale-zero")
-    .clsStr;
-    this.setState({cls: {inputArea: newCls}});
+
+  scaleToNormal(section) {
+    const newCls = clsUtil
+      .getClsList(this.state.cls.inputArea)
+      .removeCls("v-scale-zero").clsStr;
+    this.setState({ cls: { inputArea: newCls } });
   }
-  displayNone() {
-    const newCls = clsUtil.getClsList(this.state.cls.inputArea).addCls("disp-none")
-    .clsStr;
-    this.setState({cls: {inputArea: newCls}});
+
+  displayNone(section) {
+    const newCls = clsUtil
+      .getClsList(this.state.cls.inputArea)
+      .addCls("disp-none").clsStr;
+    this.setState({ cls: { inputArea: newCls } });
   }
-  displayVisible(){
-    const newCls = clsUtil.getClsList(this.state.cls.inputArea).removeCls("disp-none")
-    .clsStr;
-    this.setState({cls: {inputArea: newCls}});    
+
+  displayVisible(section) {
+    const newCls = clsUtil
+      .getClsList(this.state.cls.inputArea)
+      .removeCls("disp-none").clsStr;
+    this.setState({ cls: { inputArea: newCls } });
   }
+
   render() {
     return (
       <div className="sort">
         <div className="input-menubar">
+          <p>Input:</p>
           <MinimizeBtn
             scaleToZero={this.scaleToZero}
             scaleToNormal={this.scaleToNormal}
             displayNone={this.displayNone}
             displayVisible={this.displayVisible}
+            ref={ref => (this.getInputRef = ref)}
+            sectionCode={INPUT}
           />
         </div>
         <div className={this.state.cls.inputArea}>
@@ -170,8 +206,7 @@ export default class Sort extends Component {
   }
 }
 
-const MERGE = 
-`function merge(a, start, mid, end) {
+const MERGE = `function merge(a, start, mid, end) {
   const left = a.slice(start, mid + 1);       //devide array into left and right partition 
   const right = a.slice(mid + 1, end + 1);    //using start, mid and end
 
@@ -196,9 +231,8 @@ const MERGE =
   while (j < r)
     a[k++] = right[j++];
 }
-`
-const mergeSort = 
-`function mergeSort(a, l, r) {
+`;
+const mergeSort = `function mergeSort(a, l, r) {
   if (l < r) {
     const m = parseInt((l + r) / 2);
     const [leftStart, leftEnd, rightStart, rightEnd] = [l, m, m + 1, r];
@@ -210,5 +244,8 @@ const mergeSort =
     merge(a, l, m, r);
   }
 }
-`
-let ALGO = [{ section: sortAlgo.merge.MERGE, phase: "merge", code: MERGE}, {section: sortAlgo.merge.SPLIT, phase: "split", code: mergeSort}];
+`;
+let ALGO = [
+  { section: sortAlgo.merge.MERGE, phase: "merge", code: MERGE },
+  { section: sortAlgo.merge.SPLIT, phase: "split", code: mergeSort }
+];

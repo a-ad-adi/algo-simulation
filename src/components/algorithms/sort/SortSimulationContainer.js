@@ -5,6 +5,7 @@ import { nTypes } from "../../../util/GlobalVars";
 import uuid from "uuid/v1";
 
 import "../../../css/SortSimulationContainer.css";
+import MinimizeBtn from "../../MinimizeBtn";
 
 export default class SortSimulation extends Component {
   snapshot;
@@ -108,7 +109,17 @@ export default class SortSimulation extends Component {
       <div className="sort-simulation">
         <div className="sol-header">
           <div className="basic-info">
-            <div className="section-header">Basic information: </div>
+            <div className="section-header">
+              <p>Basic information:</p>
+              <MinimizeBtn
+                scaleToZero={this.props.scaleToZero}
+                scaleToNormal={this.props.scaleToNormal}
+                displayNone={this.props.displayNone}
+                displayVisible={this.props.displayVisible}
+                ref={this.props.getHeaderRef}
+                sectionCode={this.props.headerSection}
+              />
+            </div>
             <div>Input: {numbers}</div>
             <div className="algorithm">{this.loadAlgorithm()}</div>
           </div>
@@ -117,6 +128,14 @@ export default class SortSimulation extends Component {
             <div className="btn next" onClick={this.getNext}>
               Next
             </div>
+              <MinimizeBtn
+                scaleToZero={this.props.scaleToZero}
+                scaleToNormal={this.props.scaleToNormal}
+                displayNone={this.props.displayNone}
+                displayVisible={this.props.displayVisible}
+                ref={this.props.getHeaderRef}
+                sectionCode={this.props.headerSection}
+              />
           </div>
         </div>
         <div className="sol-body">

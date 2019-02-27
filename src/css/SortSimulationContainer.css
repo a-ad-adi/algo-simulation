@@ -14,6 +14,9 @@
     padding: 10px 0px;
     text-align: right;
 }
+.animate-actions .minmax-btn{
+    display: inline-block;
+}
 .sol-header{
     max-height: 30%;
 }
@@ -27,4 +30,13 @@
     height: 24vh;
     overflow: auto;
     scrollbar-width: thin;
+}
+.sort-simulation .section-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+}
+.sort-simulation .section-header>p{
+    margin: 0;
+    padding: 0;
 }

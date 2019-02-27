@@ -4,11 +4,11 @@ import { getInlineCss } from "../../../util/css_modifier";
 import { Tween, Timeline } from "react-gsap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-
 import "../../../css/MergeSort_Timeline.css";
 
 export default class animateMergeSort extends Component {
   numRefs = [];
+  refCntr = 0;
 
   constructor(props) {
     super(props);
@@ -17,27 +17,48 @@ export default class animateMergeSort extends Component {
     };
   }
 
-  componentDidMount() {
-    console.log("NUM refs : ", this.numRefs);
-    let [x, y, ofs] = [0, 50, 0];
-    let coords = this.numRefs.map((e, i) => {
-      x = ofs;
-      ofs = e.ref.offsetWidth;
-      console.log(x, ofs);
-      if (e.half === sortAlgo.merge.LEFT) return ({ x, y: y + 2*e.ref.scrollHeight });
-      else return ({ x, y: y + e.ref.scrollHeight});
+  componentDidMount() {}
+
+  initMerge(data) {
+    let [leftHalf, rightHalf, mergedArr] = [[], [], []];
+
+    data.subSteps.forEach((s, i) => {
+      if (s.half === sortAlgo.merge.LEFT)
+        leftHalf.push(this.getMergeObj({ i, val: s.val, duration:1, delay: i/2, opacity: 0 }));
+      else
+        rightHalf.push(this.getMergeObj({ i, val: s.val, duration:1, delay: i/2, opacity: 0 }));    
+      mergedArr.push(this.getMergeObj({ i, val: s.val, duration:0.2, delay: i/2, opacity: 1 }));
     });
-    this.setTweens(coords);
+
+    return (
+      <div className="merge-container">
+        <div className="two-halves">
+          <div className="left-half">{leftHalf}</div>
+          <div className="right-half">{rightHalf}</div>
+          <div className="merged-arr">{mergedArr}</div>
+        </div>
+      </div>
+    );
   }
 
-  setTweens(coords) {
-    let [ tweens, delay ] = [[], 0];
-    coords.forEach((e, i) => {
-      const tween = <Tween to={{ x: e.x, y: e.y, delay: delay++ }} />;
-      tweens.push(tween);
-    })    
-    this.setState({ tweens });
+  getMergeObj({ i, val, duration, delay, opacity }) {
+    const cls = opacity ? "num opacity-zero" : "num";
+    return (
+      <Timeline
+        ref={ref => this.props.getRef(ref)}
+        wrapper={<div className="wrapper" />}
+        target={
+          <Fragment>
+            <div className={cls}>{val}</div>
+          </Fragment>
+        }
+      >
+        <Tween to={{ opacity, duration, delay }} />
+      </Timeline>
+    );
   }
+
+  setTweens(coords) {}
 
   animateSplit(data) {
     let [tweenLeft, tweenRight] = [
@@ -98,57 +119,6 @@ export default class animateMergeSort extends Component {
           {tweenRight}
         </Timeline>
       </div>
-    );
-  }
-
-  initMerge(data) {
-    let [leftHalf, rightHalf, numCss] = [
-      [],
-      [],
-      csses,
-      getInlineCss(csses.num)
-    ];
-
-    data.subSteps.map((s, i) => {      
-      if (s.half === sortAlgo.merge.LEFT) {
-        leftHalf.push(this.getMergeObj({ i, val: s.val, half: s.half, seq: s.destIndex }));
-      } else {
-        rightHalf.push(this.getMergeObj({ i, val: s.val, half: s.half, seq: s.destIndex }));
-      }
-    });
-
-    return (
-      <div className="merge-container">
-        <div className="two-halves">
-          <div className="left-half">{leftHalf}</div>
-          <div className="right-half">{rightHalf}</div>
-        </div>
-      </div>
-    );
-  }
-
-  getMergeObj({ i, half, val, delay = 1000, seq }) {
-    return (
-      <Timeline
-        ref={ref => this.props.getRef(ref)}
-        wrapper={<div />}
-        target={
-          <div>
-            <Fragment>
-              {
-                <div
-                  className="num"
-                  ref={ref => this.numRefs[seq] = { ref, half }}
-                >
-                  {val}
-                </div>
-              }
-            </Fragment>
-          </div>
-        }
-      >
-        {this.state.tweens[i]}
-      </Timeline>
     );
   }
 

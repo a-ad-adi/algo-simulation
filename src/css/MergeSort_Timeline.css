@@ -6,9 +6,6 @@
 .merge-container {
   text-align: center;
 }
-.left-half, .right-half{
-    display: flex;
-}
 .two-halves {
   text-align: left;
   display: inline-block;

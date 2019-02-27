@@ -45,3 +45,6 @@
 .disp-none{
   display: none;
 }
+.opacity-zero{
+  opacity: 0;
+}

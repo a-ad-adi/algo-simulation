@@ -18,6 +18,14 @@ input.btn{
 .input-menubar{
     text-align: right;
 }
+.input-menubar{
+    display: flex;
+    justify-content: space-between;
+}
+.input-menubar>p{
+    margin: 0;
+    padding: 0 10px;
+}
 .input-menubar .minmax-btn{
     display: inline-block;
     cursor: pointer;
