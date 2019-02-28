@@ -21,8 +21,6 @@
     max-height: 30%;
 }
 .basic-info{
-    /* margin: 5px 0px;
-    padding: 10px 3px; */
     border:1px solid #555152;
     border-radius: 3px;
 }
@@ -30,6 +28,10 @@
     height: 24vh;
     overflow: auto;
     scrollbar-width: thin;
+}
+.sol-body-expand{
+    height: 42vh;
+    transition: height 0.5s ease-in-out;
 }
 .sort-simulation .section-header{
     display: flex;

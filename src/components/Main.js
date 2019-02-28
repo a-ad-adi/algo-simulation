@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Sort from "./algorithms/sort/SortInput";
 import ShortestPath from "./ShortestPath";
-
 import "./../css/Main.css";
 import Bonsai from "./Test/Bonsai";
 import RaphaelCmp from "./Test/Raphael";
@@ -22,18 +21,21 @@ export default class Main extends Component {
   }
 
   loadComponent() {
-    if (this.props.component.algo === SORT)
-      return <Sort notify={this.props.notify} />;
-    else if (this.props.component.algo === SHORTEST_PATH) {
-      return <ShortestPath notify={this.props.notify} />;
-    } else if (this.props.component.algo === RAPHAEL) {
-      return <RaphaelCmp notify={this.props.notify} />;
-    } else if (this.props.component.algo === BONSAI) {
-      return <Bonsai notify={this.props.notify} />;
-    }else if (this.props.component.algo === GSAP) {
-      return <Gsap notify={this.props.notify} />;
-    }else if (this.props.component.algo === SWAP) {
-      return <Swap notify={this.props.notify} />;
+    switch (this.props.component.algo) {
+      case SORT:
+        return <Sort notify={this.props.notify} />;
+      case SHORTEST_PATH:
+        return <ShortestPath notify={this.props.notify} />;
+      case RAPHAEL:
+        return <RaphaelCmp notify={this.props.notify} />;
+      case BONSAI:
+        return <Bonsai notify={this.props.notify} />;
+      case GSAP:
+        return <Gsap notify={this.props.notify} />;
+      case SWAP:
+        return <Swap notify={this.props.notify} />;
+      default:
+        return null;
     }
   }
 

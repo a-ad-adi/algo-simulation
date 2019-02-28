@@ -13,7 +13,7 @@ export default class MinimizeBtn extends Component {
   }
 
   handleClick(e) {
-    if (this.state.icon == MIN) {
+    if (this.state.icon === MIN) {
       this.minimize();
       this.setState({ icon: MAX });
     } else {
@@ -23,18 +23,18 @@ export default class MinimizeBtn extends Component {
   }
 
   minimize() {
-    const { scaleToZero, displayNone } = this.props;
-    scaleToZero();
+    const { scaleToZero, displayNone, sectionCode } = this.props;
+    scaleToZero(sectionCode);
     setTimeout(() => {
-      displayNone();      
+      displayNone(sectionCode);      
     }, 80);
   }
 
   maximize() {
-    const { scaleToNormal, displayVisible } = this.props;    
-    scaleToNormal();
+    const { scaleToNormal, displayVisible, sectionCode } = this.props;    
+    scaleToNormal(sectionCode);
     setTimeout(() => {
-      displayVisible();
+      displayVisible(sectionCode);
     }, 80);
 
   }

@@ -16,10 +16,18 @@
 }
 .algorithm{
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  max-width: 60vw;
 }
 .algorithm pre{
   max-height: 20vh;
   overflow-y: auto;
   scrollbar-width: thin;
+  padding: 2px;
+  max-width: 98%;
+  display: inline-block;
+}
+.merge, .split{
+  max-width: 50%;
+  display: inline-block;
 }

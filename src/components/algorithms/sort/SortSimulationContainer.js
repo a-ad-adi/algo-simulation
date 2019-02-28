@@ -88,9 +88,9 @@ export default class SortSimulation extends Component {
   }
 
   loadAlgorithm() {
-    return this.props.algo.map(e => {
+    return this.props.algo.map( (e, i) => {
       return (
-        <div className={e.phase}>
+        <div className={e.phase} key={i}>
           <pre>{e.code}</pre>
         </div>
       );
@@ -117,7 +117,7 @@ export default class SortSimulation extends Component {
                 displayNone={this.props.displayNone}
                 displayVisible={this.props.displayVisible}
                 ref={this.props.getHeaderRef}
-                sectionCode={this.props.headerSection}
+                sectionCode={this.props.animHeaderSection}
               />
             </div>
             <div>Input: {numbers}</div>
@@ -134,11 +134,11 @@ export default class SortSimulation extends Component {
                 displayNone={this.props.displayNone}
                 displayVisible={this.props.displayVisible}
                 ref={this.props.getHeaderRef}
-                sectionCode={this.props.headerSection}
+                sectionCode={this.props.animBodySection}
               />
           </div>
         </div>
-        <div className="sol-body">
+        <div className={this.props.animBodyCls}>
           <div className="steps">{this.state.steps}</div>
           <div
             className="containerEnd"

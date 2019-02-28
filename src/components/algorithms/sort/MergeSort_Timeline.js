@@ -45,6 +45,7 @@ export default class animateMergeSort extends Component {
     const cls = opacity ? "num opacity-zero" : "num";
     return (
       <Timeline
+        key={i}
         ref={ref => this.props.getRef(ref)}
         wrapper={<div className="wrapper" />}
         target={
@@ -84,7 +85,7 @@ export default class animateMergeSort extends Component {
       tweenLeft = null;
     }
     if (data.right.length)
-      rightArr = data.right.map(e => <div className="num">{e}</div>);
+      rightArr = data.right.map((e, i) => <div className="num" key={i}>{e}</div>);
     else {
       rightArr = cross;
       tweenRight = null;

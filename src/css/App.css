@@ -26,10 +26,10 @@
   transition: width 0.4s ease-in-out;
 }
 .main{
-  width: 70vw;
+  width: 68vw;
 }
 .sidebar{
-  width: 25vw;
+  width: 26vw;
 }
 
 .h-scale-zero{

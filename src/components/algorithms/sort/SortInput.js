@@ -28,7 +28,9 @@ export default class Sort extends Component {
       isReady: false,
       readyState: [],
       cls: {
-        inputArea: "init"
+        inputArea: "init",
+        animHeader: "sol-header",
+        animBody: "sol-body"
       }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -94,7 +96,6 @@ export default class Sort extends Component {
 
   simulate() {
     if (this.state.isReady) {
-      console.log(ALGO);
       return (
         <SortSimulation
           numbers={this.state.numbers}
@@ -103,12 +104,14 @@ export default class Sort extends Component {
           notify={this.props.notify}
           MinimizeHeader={this.getHeaderRef}
           minimizeSimulation={this.getSimRef}
-          headerSection={ANIM_HEADER}
-          animSection={ANIM_BODY}
+          animHeaderSection={ANIM_HEADER}
+          animBodySection={ANIM_BODY}
           scaleToZero={this.scaleToZero}
           scaleToNormal={this.scaleToNormal}
           displayNone={this.displayNone}
           displayVisible={this.displayVisible}
+          animHeaderCls={this.state.cls.animHeader}
+          animBodyCls={this.state.cls.animBody}
         />
       );
     } else return null;
@@ -137,32 +140,72 @@ export default class Sort extends Component {
     return true;
   }
 
+  mapSectionWithCode(code){
+    switch(code){
+      case INPUT:
+        return this.state.cls.inputArea;
+      case ANIM_HEADER:
+        return this.state.cls.animHeader;
+      case ANIM_BODY:
+        return this.state.cls.animBody;
+      default:
+        console.error("Invalid section code");
+        return null;
+    }
+  }
   scaleToZero(section) {
+    let clsObj = this.state.cls;
+    
     const newCls = clsUtil
       .getClsList(this.state.cls.inputArea)
       .addCls("v-scale-zero").clsStr;
-    this.setState({ cls: { inputArea: newCls } });
+
+    if (section === INPUT || section === ANIM_HEADER) {
+      let animBodyCls = clsUtil
+        .getClsList(this.state.cls.animBody)
+        .addCls("sol-body-expand").clsStr;
+      clsObj.animBody = animBodyCls;
+    }
+
+    clsObj.inputArea = newCls;
+    this.setState({ cls: clsObj });
   }
 
   scaleToNormal(section) {
+    let clsObj = this.state.cls;
     const newCls = clsUtil
       .getClsList(this.state.cls.inputArea)
       .removeCls("v-scale-zero").clsStr;
-    this.setState({ cls: { inputArea: newCls } });
+
+    if (section === INPUT || section === ANIM_HEADER) {
+      let animBodyCls = clsUtil
+        .getClsList(this.state.cls.animBody)
+        .removeCls("sol-body-expand").clsStr;
+      clsObj.animBody = animBodyCls;
+    }
+
+    clsObj.inputArea = newCls;
+    this.setState({ cls: clsObj });
   }
 
   displayNone(section) {
+    let clsObj = this.state.cls;
     const newCls = clsUtil
       .getClsList(this.state.cls.inputArea)
       .addCls("disp-none").clsStr;
-    this.setState({ cls: { inputArea: newCls } });
+
+    clsObj.inputArea = newCls;
+    this.setState({ cls: clsObj });
   }
 
   displayVisible(section) {
+    let clsObj = this.state.cls;
     const newCls = clsUtil
       .getClsList(this.state.cls.inputArea)
       .removeCls("disp-none").clsStr;
-    this.setState({ cls: { inputArea: newCls } });
+
+    clsObj.inputArea = newCls;
+    this.setState({ cls: clsObj });
   }
 
   render() {
@@ -180,7 +223,7 @@ export default class Sort extends Component {
           />
         </div>
         <div className={this.state.cls.inputArea}>
-          <form onSubmit={this.handleSubmit} autocomplete="off">
+          <form onSubmit={this.handleSubmit} autoComplete="off">
             <input
               type="text"
               name="ipnum"
@@ -193,7 +236,7 @@ export default class Sort extends Component {
                 className="btn"
                 type="button"
                 value="done"
-                autocomplete="off"
+                autoComplete="off"
                 onClick={this.handleClick}
               />
             </div>

@@ -59,9 +59,8 @@ input.btn{
 }
 .init{
     padding: 10px;
-    height: 15vh;
+    height: 13vh;
 }
-
 .simulation{    
-    padding: 10px;    
+    /* padding: 10px;     */
 }

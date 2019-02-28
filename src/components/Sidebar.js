@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Notification from "./Notification";
 import { CSSTransitionGroup } from "react-transition-group";
-import { nTypes } from "./../util/GlobalVars";
 import "./../css/Sidebar.css";
 
 export default class Sidebar extends Component {
@@ -18,39 +17,7 @@ export default class Sidebar extends Component {
   }
 
   displayNotifications() {
-    return this.state.notifications.map((n, i) => {
-      if (n.type === nTypes.GREET || n.type === nTypes.NOTIFY) {
-        const id = n.id;
-        // setTimeout(id => {
-        //   let ind = this.state.notifications.find(note => note.id === id);
-        //   let notes = this.state.notifications;
-        //   notes.splice(ind, 1);
-        //   this.setState({ noticiations: notes });
-        // }, n.timeOut);
-
-        this.setNotificationTimeOut(n)
-          .then(id => {
-            // console.log("after waiting : ");
-            let ind = this.state.notifications.find(note => note.id === id);
-            let notes = this.state.notifications;
-            notes.splice(ind, 1);
-            this.setState({ noticiations: notes });
-          })
-          .catch(err => {
-            console.log("Error removing notification.\n", err);
-          });
-      }
-      return <Notification key={n.id} data={n} />;
-    });
-  }
-
-  setNotificationTimeOut(n) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-        return n.id;
-      }, n.timeOut);
-    });
+    return this.state.notifications.map((n, i) => <Notification key={n.id} data={n} />);
   }
 
   scrollToNotification() {
