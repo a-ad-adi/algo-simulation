@@ -29,7 +29,7 @@ class RaphaelCmp extends Component {
         y: 50,
         r: 40,
         attr: { stroke: "#0b8ac9", "stroke-width": 5 },
-        animate: Raphael.animation({ cx: 60, title: "circle" }, 500)
+        animate: Raphael.animation({ cx: 600, title: "circle" }, 500)
       },
       {
         x: 100,
@@ -55,7 +55,7 @@ class RaphaelCmp extends Component {
       }
     ];
     return (
-      <Paper width={300} height={300}>
+      <Paper width={3000} height={300}>
         <Set>
           {data.map(function(ele, pos) {
             return (

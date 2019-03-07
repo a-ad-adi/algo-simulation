@@ -1,0 +1,26 @@
+.node{
+    fill: #333;
+    stroke: #333;
+    opacity: 0.2;
+    display: inline-block;
+    position: fixed;
+    min-width: 50px;
+    min-height: 50px;
+    margin: 1px;
+    border-radius: 2px;
+}
+.created{
+    background: blue;
+    opacity: 0.4;
+}
+.selected{
+    background: green;
+    opacity: 0.6;
+}
+.deselected{
+    background: blue;
+    opacity: 0.4;
+}
+.locked{
+
+}

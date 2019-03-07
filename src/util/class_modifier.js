@@ -15,6 +15,10 @@ const clsUtil = {
     this.getClsString();
     return this;
   },
+  clearCls: function(){
+    this.clsList = [];
+    return this;
+  },
   getClsList: function(str) {
     this.clsList = str.split(/\s/);
     this.getClsString();

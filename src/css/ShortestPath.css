@@ -1,0 +1,9 @@
+.shortest-path .init{
+    height: auto;
+}
+.paper-container{    
+    max-width: 75vw;
+    /* display: block; */
+    margin: auto;
+    text-align: center;
+}

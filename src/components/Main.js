@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Sort from "./algorithms/sort/SortInput";
-import ShortestPath from "./ShortestPath";
+import ShortestPath from "./algorithms/graph/ShortestPath";
 import "./../css/Main.css";
 import Bonsai from "./Test/Bonsai";
 import RaphaelCmp from "./Test/Raphael";
