@@ -3,7 +3,6 @@ import MinimizeBtn from "../../MinimizeBtn";
 import Node from "./Node";
 import { Raphael, Paper, Set, Line, Circle, Text } from "react-raphael";
 import uuid from "uuid";
-import {findShortestPath} from "../../../algorithms/ShortestPath";
 import "./../../../css/ShortestPath.css";
 
 const [INPUT, ANIM_HEADER, ANIM_BODY] = [0, 1, 2];
@@ -23,6 +22,24 @@ export default class ShortestPath extends Component {
 
     let nodeList = [];
     let c = 0;
+    for (let i = 0; i < 30; i++) {
+      for (let j = 0; j < 30; j++) {
+        const x = j * nodeWidth + 5;
+        const y = i * nodeHeight + 5;
+        nodeList.push({
+          id: c++,
+          x,
+          y,
+          status: DEFAULT,
+          attr: {
+            fill: "#333",
+            opacity: 0.05,
+            width: 30,
+            height: 30
+          }
+        });
+      }
+    }
 
     this.state = {
       cls: {
@@ -36,8 +53,7 @@ export default class ShortestPath extends Component {
         width: 30,
         height: 30
       },
-      grid: [],
-      gridStatus: [],
+      nodeList,
       node1: null,
       node2: null,
       lines: [],
@@ -48,47 +64,15 @@ export default class ShortestPath extends Component {
 
     this.addNode = this.addNode.bind(this);
     this.drawLine = this.drawLine.bind(this);
-    this.loadGrid = this.loadGrid.bind(this);
-  }
-
-  loadGrid() {
-    findShortestPath();
-    let [c, grid, gridStatus] = [0, [], []];
-    for (let i = 0; i < 30; i++) {
-      for (let j = 0; j < 30; j++) {
-        const x = j * nodeWidth + 5;
-        const y = i * nodeHeight + 5;
-
-        gridStatus.push({ id: c, status: DEFAULT, x, y });
-        grid.push(
-          <Node
-            key={c}
-            id={c}
-            status={DEFAULT}
-            x={x}
-            y={y}
-            addNode={this.addNode}
-            attr={{
-              fill: "#333",
-              opacity: 0.05,
-              width: 30,
-              height: 30
-            }}
-          />
-        );
-        c++;
-      }
-    }
-    this.setState({ grid, gridStatus });
   }
 
   addNode(id) {
     this.changeStatus(id);
     let { node1, node2 } = this.state;
     if (node1) {
-      if (node1.id !== id) node2 = this.state.gridStatus[id];
+      if (node1.id !== id) node2 = this.state.nodeList[id];
     } else {
-      node1 = this.state.gridStatus[id];
+      node1 = this.state.nodeList[id];
     }
     this.setState({ node1, node2 });
     this.drawLine();
@@ -148,48 +132,47 @@ export default class ShortestPath extends Component {
   }
 
   //forcefull set
-  setStatus(nodeId, newStatus) {
-    let { key, id, status, x, y, attr } = this.state.gridStatus[nodeId];
-    let { grid, gridStatus } = this.state;
-
-    switch (newStatus) {
+  setStatus(id, status) {
+    let nodeList = this.state.nodeList;
+    let node = this.state.nodeList[id];
+    switch (status) {
       case DEFAULT:
-        status = newStatus;
-        attr = {
+        node.attr = {
           fill: "#333",
           opacity: 0.05,
           width: 30,
           height: 30
         };
-
+        node.status = DEFAULT;
       case CREATED:
-        status = newStatus;
-        attr = {
+        node.attr = {
           fill: "red",
           opacity: 0.3,
           width: 30,
           height: 30
         };
+        node.status = CREATED;
         break;
 
       case SELECTED:
-        status = newStatus;
-        attr = {
+        node.attr = {
           fill: "green",
           opacity: 0.6,
           width: 30,
           height: 30
         };
+
+        node.status = SELECTED;
         break;
 
       case DESELECTED:
-        status = newStatus;        
-        attr = {
+        node.attr = {
           fill: "red",
           opacity: 0.3,
           width: 30,
           height: 30
         };
+        node.status = DESELECTED;
         break;
 
       case LOCKED:
@@ -198,54 +181,54 @@ export default class ShortestPath extends Component {
       default:
         break;
     }
-    grid[nodeId] = this.getNewNode({ key, id, status, x, y, attr });
-    gridStatus[nodeId] = { key, id, status, x, y };
-    this.setState({ grid, gridStatus });
+    nodeList[id] = node;
+    this.setState({ nodeList });
   }
 
   // automatic change
-  changeStatus(nodeId) {
-    let { key, id, status, x, y, attr } = this.state.gridStatus[nodeId];
-    let { grid, gridStatus } = this.state;
-    switch (status) {
+  changeStatus(id) {
+    let nodeList = this.state.nodeList;
+    let node = nodeList[id];
+    switch (node.status) {
       case DEFAULT:
-        status = CREATED;
-        attr = {
+        node.attr = {
           fill: "red",
           opacity: 0.3,
           width: 30,
           height: 30
         };
+        node.status = CREATED;
         break;
 
       case CREATED:
-        status = SELECTED;
-        attr = {
+        node.attr = {
           fill: "green",
           opacity: 0.6,
           width: 30,
           height: 30
         };
+
+        node.status = SELECTED;
         break;
 
       case SELECTED:
-        status = DESELECTED;
-        attr = {
+        node.attr = {
           fill: "red",
           opacity: 0.3,
           width: 30,
           height: 30
         };
+        node.status = DESELECTED;
         break;
 
       case DESELECTED:
-        status = SELECTED;
-        attr = {
+        node.attr = {
           fill: "green",
           opacity: 0.6,
           width: 30,
           height: 30
         };
+        node.status = SELECTED;
         break;
 
       case LOCKED:
@@ -254,26 +237,26 @@ export default class ShortestPath extends Component {
       default:
         break;
     }
-    grid[nodeId] = this.getNewNode({ key, id, status, x, y, attr });
-    gridStatus[nodeId] = { key, id, status, x, y };
-    this.setState({ grid, gridStatus });
+    nodeList[id] = node;
+    this.setState({ nodeList });
   }
 
-  getNewNode({ key, id, status, x, y, attr }) {
-    return (
-      <Node
-        key={key}
-        id={id}
-        status={status}
-        x={x}
-        y={y}
-        addNode={this.addNode}
-        attr={attr}
-      />
-    );
-  }
+  render() {  
+    const nodeList = this.state.nodeList;
+      const grid = nodeList.map((n, i) => {
+        return (
+          <Node
+            key={i}
+            id={i}
+            status={n.status}
+            x={n.x}
+            y={n.y}
+            addNode={this.addNode}
+            attr={n.attr}
+          />
+        );
+      });
 
-  render() {
     return (
       <div className="shortest-path">
         <div className="input-menubar">
@@ -286,21 +269,13 @@ export default class ShortestPath extends Component {
             ref={ref => (this.getInputRef = ref)}
             sectionCode={INPUT}
           />
-          <div className="actions">
-            <input
-              type="button"
-              className="btn"
-              value="load grid"
-              onClick={this.loadGrid}
-            />
-          </div>
         </div>
         <div className={this.state.cls.inputArea}>
           <Paper width={500} height={500}>
-            <Set>{this.state.grid}</Set>
             <Set>{this.state.lines}</Set>
             <Set>{this.state.circles}</Set>
             <Set>{this.state.edgeWts}</Set>
+            <Set>{grid}</Set>
           </Paper>
         </div>
         <hr />

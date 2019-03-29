@@ -1,5 +1,11 @@
 .shortest-path .init{
     height: auto;
+    
+}
+.shortest-path .actions input{
+    font-size: 1em;
+    height: auto;
+    width: auto;
 }
 .paper-container{    
     max-width: 75vw;
