@@ -1,311 +1,581 @@
 import React, { Component } from "react";
-import MinimizeBtn from "../../MinimizeBtn";
+import ShortestPath_Animation from "./ShortestPath_Animation";
 import Node from "./Node";
 import { Raphael, Paper, Set, Line, Circle, Text } from "react-raphael";
 import uuid from "uuid";
-import {findShortestPath} from "../../../algorithms/ShortestPath";
-import "./../../../css/ShortestPath.css";
+import { nTypes } from "./../../../util/GlobalVars";
 
-const [INPUT, ANIM_HEADER, ANIM_BODY] = [0, 1, 2];
-const [nodeWidth, nodeHeight] = [50, 50];
-const [lineWidth] = [2];
-const [DEFAULT, CREATED, SELECTED, DESELECTED, LOCKED] = [
-  "default",
-  "created",
-  "selected",
-  "deselected",
-  "locked"
-];
+import "./../../../css/ShortestPath.css";
 
 export default class ShortestPath extends Component {
   constructor(props) {
     super(props);
-
     let nodeList = [];
     let c = 0;
-
     this.state = {
-      cls: {
-        inputArea: "init",
-        animHeader: "sol-header",
-        animBody: "sol-body"
-      },
-      attr: {
-        fill: "#333",
-        opacity: 0.05,
-        width: 30,
-        height: 30
-      },
-      grid: [],
-      gridStatus: [],
+      grid: {},
+      gridLocked: false,
+      isReady: false,
+      start: null,
       node1: null,
       node2: null,
-      lines: [],
-      circles: [],
-      lineInfo: [],
-      edgeWts: []
+      lines: {},
+      circles: {},
+      edgeWts: {},
+      res: [],
+      stepNo: -1,
+      actions: []
     };
 
-    this.addNode = this.addNode.bind(this);
-    this.drawLine = this.drawLine.bind(this);
+    for (let i = 0; i < ROWS * COLS; i++) {
+      this.state[`${i}`] = null;
+    }
     this.loadGrid = this.loadGrid.bind(this);
+    this.lockGrid = this.lockGrid.bind(this);
+    this.addNode = this.addNode.bind(this);
+    this.updateNode = this.updateNode.bind(this);
+    this.getNewLine = this.getNewLine.bind(this);
+    this.addLine = this.addLine.bind(this);
+    this.removeLine = this.removeLine.bind(this);
+    this.updateLine = this.updateLine.bind(this);
+    this.updateCircle = this.getNewCircle.bind(this);
+    this.updateEdgeWt = this.getNewEdgeWt.bind(this);
   }
 
-  loadGrid() {
-    findShortestPath();
-    let [c, grid, gridStatus] = [0, [], []];
-    for (let i = 0; i < 30; i++) {
-      for (let j = 0; j < 30; j++) {
-        const x = j * nodeWidth + 5;
-        const y = i * nodeHeight + 5;
+  loadGrid(doClear) {
+    this.setState({
+      grid: {},
+      gridLocked: false,
+      isReady: false,
+      node1: null,
+      node2: null,
+      lines: {},
+      circles: {},
+      edgeWts: {},
+      res: [],
+      stepNo: -1
+    });
 
-        gridStatus.push({ id: c, status: DEFAULT, x, y });
-        grid.push(
-          <Node
-            key={c}
-            id={c}
-            status={DEFAULT}
-            x={x}
-            y={y}
-            addNode={this.addNode}
-            attr={{
-              fill: "#333",
-              opacity: 0.05,
-              width: 30,
-              height: 30
-            }}
-          />
-        );
+    let c = 0;
+    let grid = {};
+    for (let i = 0; i < ROWS; i++) {
+      for (let j = 0; j < COLS; j++) {
+        const x = j * OFFSET;
+        const y = i * OFFSET;
+        const newNode = this.getNewNode({
+          id: c,
+          status: DEFAULT,
+          x,
+          y,
+          addNode: this.addNode,
+          attr: ATTR.DEFAULT,
+          onClickHandler: this.addNode
+        });
+        grid[`${c}`] =  newNode;
         c++;
       }
     }
-    this.setState({ grid, gridStatus });
+
+    if (!doClear) {
+      this.setState({ grid }, () => this.drawDummyGraph());
+    } else this.setState({ grid });
   }
 
-  addNode(id) {
-    this.changeStatus(id);
-    let { node1, node2 } = this.state;
-    if (node1) {
-      if (node1.id !== id) node2 = this.state.gridStatus[id];
-    } else {
-      node1 = this.state.gridStatus[id];
+  lockGrid() {
+    if (this.state.gridLocked) return;
+    const grid = this.state.grid;
+    if (Object.getOwnPropertyNames(this.state.lines).length === 0) {
+      this.sendMessage(NO_EGDES);
+      return;
     }
-    this.setState({ node1, node2 });
-    this.drawLine();
+
+    Object.getOwnPropertyNames(grid).forEach(id => {
+      if (grid[`${id}`].meta.status === DEFAULT) this.removeNode(id);
+      else this.setStatus(id, LOCKED);
+    });
+    this.setState({ gridLocked: true, isReady: true });
   }
 
-  drawLine() {
-    let { node1, node2 } = this.state;
-    let { lines, lineInfo } = this.state;
-    if (node1 && node2) {
-      if (node1.status === SELECTED || node2.status === SELECTED) {
-        const lineId = uuid();
-        const p1 = { x: node1.x + nodeWidth / 5, y: node1.y + nodeHeight / 5 };
-        const p2 = { x: node2.x + nodeWidth / 5, y: node2.y + nodeHeight / 5 };
+  canAddLine(node1, node2) {
+    return (
+      node1 &&
+      node2 &&
+      (node1.status === SELECTED ||
+        (node2.status === SELECTED && node1.status === CREATED))
+    );
+  }
 
-        lines.push(
-          <Line key={lineId} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} />
-        );
+  addLine() {
+    let { node1: p1, node2: p2 } = this.state;
+    const { lines, circles, edgeWts } = this.state;
+    if (p1 && p2) {
+      if (this.canAddLine(p1, p2)) {
+        const id = this.getLineId(p1, p2);
 
-        lineInfo.push({ id: lineId, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y });
-        this.displayLineWt(lineId);
-        this.setStatus(node1.id, DESELECTED);
-        this.setStatus(node2.id, DESELECTED);
-        node1 = null;
-        node2 = null;
-        this.setState({ lines, lineInfo, node1, node2 });
+        if (!lines[`${id}`]) {
+          lines[`${id}`] = this.getNewLine({ id, p1, p2 });
+          const { x, y } = this.calcOrigin(p1, p2);
+          const wt = this.calcWt(p1, p2);
+          circles[`${id}`] = this.getNewCircle({ id, x, y });
+          edgeWts[`${id}`] = this.getNewEdgeWt({ id, x, y, wt });
+        }
+        this.setStatus(p1.id, DESELECTED);
+        this.setStatus(p2.id, DESELECTED);
+        p1 = null;
+        p2 = null;
+        this.setState({ lines, circles, edgeWts, node1: p1, node2: p2 });
       }
     }
   }
 
-  displayLineWt(id) {
-    const line = this.state.lineInfo.find(l => l.id === id);
-    const { x1, y1, x2, y2 } = line;
-    const [cx, cy] = [(x1 + x2) / 2, (y1 + y2) / 2];
-    const wt = Math.floor(
-      Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
-    );
-    let { circles, edgeWts } = this.state;
-    edgeWts.push(
-      <Text
-        key={id}
-        x={cx}
-        y={cy}
-        text={`${wt}`}
-        attr={{ fill: "red", "font-size": 12 }}
-      />
-    );
-    circles.push(
-      <Circle
-        key={id}
-        x={cx}
-        y={cy}
-        r={12}
-        attr={{ fill: "white", opacity: 0.5, stroke: "black" }}
-      />
-    );
-    this.setState({ circles, edgeWts });
+  render() {
+    if (this.state.isReady)
+      return (
+        <div className="shortest-path">{this.loadShortestPathOutput()}</div>
+      );
+    else
+      return (
+        <div className="shortest-path">{this.loadShortestPathInput()}</div>
+      );
   }
 
+  //Helper functions
+
+  //render related
+  loadShortestPathOutput() {
+    const { grid, lines, circles, edgeWts } = this.loadGraphMetaData();
+    return (
+      <ShortestPath_Animation
+        getNewNode={this.getNewNode}
+        getNewLine={this.getNewLine}
+        getNewCircle={this.getNewCircle}
+        getNewEdgeWt={this.getNewEdgeWt}
+        notify={this.props.notify}
+        grid={grid}
+        lines={lines}
+        circles={circles}
+        edgeWts={edgeWts}
+      />
+    );
+  }
+
+  loadShortestPathInput() {
+    const { grid, lines, circles, edgeWts } = this.loadComponents();
+    return (
+      <div>
+        <div className="input-menubar" />
+        <div className="actions">
+          {this.state.actions}
+          {this.getMenu({
+            value: "Done",
+            onClickHandler: this.lockGrid
+          })}
+          {this.getMenu({
+            value: "New",
+            onClickHandler: () => this.loadGrid(false)
+          })}
+          {this.getMenu({
+            value: "Reset",
+            onClickHandler: () => this.loadGrid(true)
+          })}
+        </div>
+        <div className="init">
+          <Paper width={500} height={350}>
+            <Set>{grid}</Set>
+            <Set>{lines}</Set>
+            <Set>{circles}</Set>
+            <Set>{edgeWts}</Set>
+          </Paper>
+        </div>
+        <div className="simulation">
+          <div className="stepwise-graphs" />
+        </div>
+      </div>
+    );
+  }
+
+  loadGraphMetaData() {
+    const { grid, lines, circles, edgeWts } = this.state;
+    const [gridInfo, linesInfo, circlesInfo, edgeWtsInfo] = [{}, {}, {}, {}];
+
+    Object.getOwnPropertyNames(grid).forEach(id => {
+      gridInfo[`${id}`] = grid[`${id}`].meta;
+    });
+
+    Object.getOwnPropertyNames(lines).forEach(id => {
+      linesInfo[`${id}`] = lines[`${id}`].meta;
+    });
+
+    Object.getOwnPropertyNames(circles).forEach(id => {
+      circlesInfo[`${id}`] = circles[`${id}`].meta;
+    });
+
+    Object.getOwnPropertyNames(edgeWts).forEach(id => {
+      edgeWtsInfo[`${id}`] = edgeWts[`${id}`].meta;
+    });
+
+    return {
+      grid: gridInfo,
+      lines: linesInfo,
+      circles: circlesInfo,
+      edgeWts: edgeWtsInfo
+    };
+  }
+  getMenu({ value, onClickHandler }) {
+    return (
+      <input
+        type="button"
+        className="btn"
+        value={value}
+        onClick={onClickHandler}
+      />
+    );
+  }
+
+  //graph generation related
+  setActiveNode({ id, status, x, y }) {
+    return { id, status, x, y };
+  }
+
+  getNewNode({ id, status, x, y, attr, onClickHandler }) {
+    return {
+      meta: { id, status, x, y, attr, onClickHandler },
+      node: (
+        <Node
+          key={id}
+          id={id}
+          status={status}
+          x={x}
+          y={y}
+          onClickHandler={onClickHandler}
+          attr={{
+            ...attr,
+            width: WIDTH,
+            height: HEIGHT,
+            OFFSET: OFFSET,
+            cursor: "pointer"
+          }}
+        />
+      )
+    };
+  }
+
+  addNode(id) {
+    if (this.state.gridLocked && this.state.start == null) {
+      this.setStatus(id, START_NODE);
+      this.setState({ start: this.state.grid[`${id}`].meta });
+    } else if (!this.state.gridLocked) {
+      this.changeStatus(id);
+      let { node1, node2 } = this.state;
+      let { status, x, y } = this.state.grid[`${id}`].meta;
+      if (node1) {
+        if (node1.id !== id) node2 = this.setActiveNode({ id, status, x, y });
+      } else {
+        node1 = this.setActiveNode({ id, status, x, y });
+      }
+      this.setState({ node1, node2 }, this.addLine);
+    }
+  }
+
+  updateNode() {}
+
+  //node attributes and status related
+  getAttrs(status) {
+    switch (status) {
+      case DEFAULT:
+        return ATTR.DEFAULT;
+      case CREATED:
+        return ATTR.CREATED;
+      case SELECTED:
+        return ATTR.SELECTED;
+      case DESELECTED:
+        return ATTR.DESELECTED;
+      case LOCKED:
+        return ATTR.LOCKED;
+      case START_NODE:
+        return ATTR.START_NODE;
+    }
+  }
+
+  loadComponents() {
+    let [grid, lines, circles, edgeWts] = [{}, {}, {}, {}];
+
+    grid = this.getComponentCollection(COLLECTION.GRID, PROPS.NODE);
+    lines = this.getComponentCollection(COLLECTION.LINES, PROPS.LINE);
+    circles = this.getComponentCollection(COLLECTION.CIRLCES, PROPS.CIRCLE);
+    edgeWts = this.getComponentCollection(COLLECTION.WTS, PROPS.WT);
+    return { grid, lines, circles, edgeWts };
+  }
+
+  getComponentCollection(type, prop) {
+    const src = this.state;
+    let collection = [];
+    Object.getOwnPropertyNames(src[`${type}`]).forEach(id => {
+      collection.push(src[`${type}`][`${id}`][`${prop}`]);
+    });
+    return collection;
+  }
+
+  //edge related
+  getLineId(node1, node2) {
+    if (node1.x < node2.x) {
+      return `${node1.x}:${node1.y}:${node2.x}:${node2.y}`;
+    } else if (node1.x > node2.x) {
+      return `${node2.x}:${node2.y}:${node1.x}:${node1.y}`;
+    } else {
+      if (node1.y < node2.y)
+        return `${node1.x}:${node1.y}:${node2.x}:${node2.y}`;
+      else if (node1.y > node2.y)
+        return `${node2.x}:${node2.y}:${node1.x}:${node1.y}`;
+    }
+    return `${node1.x}:${node1.y}:${node2.x}:${node2.y}`;
+  }
+
+  getNewRect() {}
+
+  getNewLine({ id, p1, p2, wt, attr }) {
+    return {
+      meta: {
+        id,
+        x1: p1.x,
+        x2: p2.x,
+        y1: p1.y,
+        y2: p2.y,
+        from: p1.id,
+        to: p2.id,
+        wt,
+        attr
+      },
+      line: (
+        <Line
+          key={id}
+          x1={p1.x + OFFSET / 5}
+          y1={p1.y + OFFSET / 5}
+          x2={p2.x + OFFSET / 5}
+          y2={p2.y + OFFSET / 5}
+          attr={{ attr }}
+        />
+      )
+    };
+  }
+
+  updateLine(ids, attr) {
+    const lines = this.state.lines;
+    console.log("Passed line ids : ", ids);
+    ids.forEach(id => {
+      const { x1, y1, x2, y2, from, to, wt } = lines[`${id}`].meta;
+      const p1 = { x: x1, y: y1, id: from };
+      const p2 = { x: x2, y: y2, id: to };
+      console.log(p1, p2);
+      lines[`${id}`].line = this.getNewLine({ id, p1, p2, wt, attr });
+    });
+    this.setState({ lines });
+  }
+
+  getNewCircle({ id, x, y }) {
+    return {
+      meta: { id, x, y },
+      circle: (
+        <Circle
+          id={id}
+          key={id}
+          x={x + OFFSET / 5}
+          y={y + OFFSET / 5}
+          r={12}
+          attr={{
+            fill: "white",
+            opacity: 0.5,
+            stroke: "black",
+            cursor: "pointer"
+          }}
+        />
+      )
+    };
+  }
+
+  updateCircle(id) {}
+
+  getNewEdgeWt({ id, x, y, wt }) {
+    return {
+      meta: { id, x, y, wt },
+      wt: (
+        <Text
+          dblclick={() => this.removeLine(id)}
+          id={id}
+          key={id}
+          x={x + OFFSET / 5}
+          y={y + OFFSET / 5}
+          text={`${wt}`}
+          attr={{ fill: "red", "font-size": 12, cursor: "pointer" }}
+        />
+      )
+    };
+  }
+
+  updateEdgeWt(id) {}
+
+  removeNode(id) {
+    const grid = this.state.grid;
+    delete grid[`${id}`];
+    this.setState({ grid });
+  }
+
+  removeLine(id) {
+    "use strict";
+    if (!this.state.gridLocked) {
+      let { lines, circles, edgeWts } = this.state;
+      delete lines[`${id}`];
+      delete edgeWts[`${id}`];
+      delete circles[`${id}`];
+      this.setState({ lines, circles, edgeWts });
+    }
+  }
+
+  calcWt(node1, node2) {
+    return Math.floor(
+      Math.sqrt(Math.pow(node2.x - node1.x, 2) + Math.pow(node2.y - node1.y, 2))
+    );
+  }
+
+  calcOrigin(node1, node2) {
+    return { x: (node1.x + node2.x) / 2, y: (node1.y + node2.y) / 2 };
+  }
   //forcefull set
   setStatus(nodeId, newStatus) {
-    let { key, id, status, x, y, attr } = this.state.gridStatus[nodeId];
-    let { grid, gridStatus } = this.state;
+    const grid = this.state.grid;
+    let { id, status, x, y, attr } = grid[`${nodeId}`].meta;
+    status = newStatus;
+    attr = this.getAttrs(status);
 
-    switch (newStatus) {
-      case DEFAULT:
-        status = newStatus;
-        attr = {
-          fill: "#333",
-          opacity: 0.05,
-          width: 30,
-          height: 30
-        };
+    const newNode = this.getNewNode({
+      id,
+      status,
+      x,
+      y,
+      attr,
+      onClickHandler: this.addNode
+    });
+    grid[`${nodeId}`] = newNode;
 
-      case CREATED:
-        status = newStatus;
-        attr = {
-          fill: "red",
-          opacity: 0.3,
-          width: 30,
-          height: 30
-        };
-        break;
-
-      case SELECTED:
-        status = newStatus;
-        attr = {
-          fill: "green",
-          opacity: 0.6,
-          width: 30,
-          height: 30
-        };
-        break;
-
-      case DESELECTED:
-        status = newStatus;        
-        attr = {
-          fill: "red",
-          opacity: 0.3,
-          width: 30,
-          height: 30
-        };
-        break;
-
-      case LOCKED:
-        break;
-
-      default:
-        break;
-    }
-    grid[nodeId] = this.getNewNode({ key, id, status, x, y, attr });
-    gridStatus[nodeId] = { key, id, status, x, y };
-    this.setState({ grid, gridStatus });
+    this.setState({ grid });
   }
 
   // automatic change
   changeStatus(nodeId) {
-    let { key, id, status, x, y, attr } = this.state.gridStatus[nodeId];
-    let { grid, gridStatus } = this.state;
+    const grid = this.state.grid;
+    let { key, id, status, x, y, attr } = grid[`${nodeId}`].meta;
     switch (status) {
       case DEFAULT:
         status = CREATED;
-        attr = {
-          fill: "red",
-          opacity: 0.3,
-          width: 30,
-          height: 30
-        };
         break;
-
       case CREATED:
         status = SELECTED;
-        attr = {
-          fill: "green",
-          opacity: 0.6,
-          width: 30,
-          height: 30
-        };
         break;
-
       case SELECTED:
         status = DESELECTED;
-        attr = {
-          fill: "red",
-          opacity: 0.3,
-          width: 30,
-          height: 30
-        };
         break;
-
       case DESELECTED:
         status = SELECTED;
-        attr = {
-          fill: "green",
-          opacity: 0.6,
-          width: 30,
-          height: 30
-        };
         break;
-
       case LOCKED:
         break;
-
       default:
         break;
     }
-    grid[nodeId] = this.getNewNode({ key, id, status, x, y, attr });
-    gridStatus[nodeId] = { key, id, status, x, y };
-    this.setState({ grid, gridStatus });
+    this.setStatus(id, status);
   }
 
-  getNewNode({ key, id, status, x, y, attr }) {
-    return (
-      <Node
-        key={key}
-        id={id}
-        status={status}
-        x={x}
-        y={y}
-        addNode={this.addNode}
-        attr={attr}
-      />
-    );
+  //notifications related
+  sendMessage(msg) {
+    this.props.notify({
+      id: uuid(),
+      timeOut: 4000,
+      type: nTypes.NOTIFY,
+      msg
+    });
   }
 
-  render() {
-    return (
-      <div className="shortest-path">
-        <div className="input-menubar">
-          <p>Input:</p>
-          <MinimizeBtn
-            scaleToZero={this.scaleToZero}
-            scaleToNormal={this.scaleToNormal}
-            displayNone={this.displayNone}
-            displayVisible={this.displayVisible}
-            ref={ref => (this.getInputRef = ref)}
-            sectionCode={INPUT}
-          />
-          <div className="actions">
-            <input
-              type="button"
-              className="btn"
-              value="load grid"
-              onClick={this.loadGrid}
-            />
-          </div>
-        </div>
-        <div className={this.state.cls.inputArea}>
-          <Paper width={500} height={500}>
-            <Set>{this.state.grid}</Set>
-            <Set>{this.state.lines}</Set>
-            <Set>{this.state.circles}</Set>
-            <Set>{this.state.edgeWts}</Set>
-          </Paper>
-        </div>
-        <hr />
-        <div className="simulation" />
-      </div>
-    );
+  drawDummyGraph() {
+    const { lines, circles, edgeWts } = this.state;
+    const edges = [
+      { from: 91, to: 63, id: 0 },
+      { from: 91, to: 122, id: 1 },
+      { from: 63, to: 67, id: 2 },
+      { from: 122, to: 126, id: 3 },
+      { from: 67, to: 98, id: 4 },
+      { from: 126, to: 98, id: 5 }
+    ];
+    edges.forEach(e => {
+      const p1 = this.state.grid[`${e.from}`].meta;
+      const p2 = this.state.grid[`${e.to}`].meta;
+      this.setStatus(p1.id, CREATED);
+      this.setStatus(p2.id, CREATED);
+      const id = e.id;
+      if (!lines[`${id}`]) {
+        const wt = this.calcWt(p1, p2);
+        lines[`${id}`] = this.getNewLine({ id, p1, p2, wt });
+        const { x, y } = this.calcOrigin(p1, p2);
+        circles[`${id}`] = this.getNewCircle({ id, x, y });
+        edgeWts[`${id}`] = this.getNewEdgeWt({ id, x, y, wt });
+      }
+    });
+    this.setState({ lines, circles, edgeWts });
   }
 }
+const [WIDTH, HEIGHT, OFFSET] = [25, 25, 40];
+const [DEFAULT, CREATED, SELECTED, DESELECTED, LOCKED, START_NODE] = [
+  "default",
+  "created",
+  "selected",
+  "deselected",
+  "locked",
+  "start node"
+];
+const [NO_EGDES, EMPTY_GRAPH, NOT_DONE] = [
+  "No edges in the graph",
+  'The graph is empty.Please click "New" to create a graph',
+  "Please press done if the graph is ready"
+];
+
+const [ROWS, COLS] = [8, 30];
+
+const ATTR = {
+  DEFAULT: {
+    fill: "#333",
+    opacity: 0.05
+  },
+  CREATED: {
+    fill: "red",
+    opacity: 0.3
+  },
+  SELECTED: {
+    fill: "green",
+    opacity: 0.6
+  },
+  DESELECTED: {
+    fill: "red",
+    opacity: 0.3
+  },
+  LOCKED: {
+    fill: "#333",
+    opacity: 0.6
+  },
+  START_NODE: {
+    fill: "orangered",
+    opacity: 0.8
+  }
+};
+
+const COLLECTION = {
+  GRID: "grid",
+  LINES: "lines",
+  CIRLCES: "circles",
+  WTS: "edgeWts"
+};
+const PROPS = {
+  META: "meta",
+  NODE: "node",
+  LINE: "line",
+  CIRCLE: "circle",
+  WT: "wt"
+};

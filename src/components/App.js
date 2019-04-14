@@ -40,7 +40,6 @@ export default class App extends Component {
       this.removeNotification({ id, type, timeOut});
     }
     this.setState({ notifications });
-    console.log(this.state.notifications);
   }
 
   removeNotification({id, type, timeOut}) {
