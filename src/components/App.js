@@ -21,6 +21,7 @@ export default class App extends Component {
       notifications: []
     };
     this.notify = this.notify.bind(this);
+    this.clearNotifications = this.clearNotifications.bind(this);
     this.removeNotification = this.removeNotification.bind(this);
     this.changeComponent = this.changeComponent.bind(this);
   }
@@ -37,15 +38,24 @@ export default class App extends Component {
     } else if (type === nTypes.NOTIFY) {
       const { timeOut = 2000, msg } = n;
       notifications.push({ id, type, timeOut, msg });
-      this.removeNotification({ id, type, timeOut});
+      this.removeNotification({ id, type, timeOut });
+    } else if (type === nTypes.CONTENT) {
+      const { content, stepNo } = n;
+      notifications.push({ id, type, content, stepNo });
     }
     this.setState({ notifications });
   }
 
-  removeNotification({id, type, timeOut}) {
+  clearNotifications() {
+    this.setState({ notifications: [] });    
+  }
+
+  removeNotification({ id, type, timeOut }) {
     setTimeout(() => {
-      let ind = this.state.notifications.findIndex((note, ind) => note.id === id);
-      if(ind !== null){
+      let ind = this.state.notifications.findIndex(
+        (note, ind) => note.id === id
+      );
+      if (ind !== null) {
         let notes = this.state.notifications;
         notes.splice(ind, 1);
         this.setState({ noticiations: notes });
@@ -62,9 +72,16 @@ export default class App extends Component {
       <div className="App">
         <div className="title-home">Home</div>
         <div className="home">
-          <Menubar changeComponent={this.changeComponent} />
-          <Main component={this.state.component} notify={this.notify} />
-          <Sidebar notifications={this.state.notifications} removeNotification={this.removeNotification}/>
+          <Menubar changeComponent={this.changeComponent} clearNotifications={this.clearNotifications}/>
+          <Main
+            component={this.state.component}
+            notify={this.notify}
+            clearNotifications={this.clearNotifications}
+          />
+          <Sidebar
+            notifications={this.state.notifications}
+            removeNotification={this.removeNotification}
+          />
         </div>
       </div>
     );

@@ -2,43 +2,59 @@ const graph = {
   edges: {
     "0": [{ to: 1, wt: 6, id: 0 }, { to: 3, wt: 1, id: 1 }],
     "1": [
-      { to: 0, wt: 6, id: 0},
-      { to: 2, wt: 5, id: 2},
-      { to: 3, wt: 2 , id:3},
-      { to: 4, wt: 2, id:4}
+      { to: 0, wt: 6, id: 0 },
+      { to: 2, wt: 5, id: 2 },
+      { to: 3, wt: 2, id: 3 },
+      { to: 4, wt: 2, id: 4 }
     ],
-    "2": [{ to: 1, wt: 5, id:2 }, { to: 4, wt: 5, id:5 }],
-    "3": [{ to: 0, wt: 1, id:1 }, { to: 1, wt: 2, id:3 }, { to: 4, wt: 1, id:6 }],
-    "4": [{ to: 1, wt: 2, id:4 }, { to: 2, wt: 5, id:5 }, { to: 3, wt: 1,id:6 }]
+    "2": [{ to: 1, wt: 5, id: 2 }, { to: 4, wt: 5, id: 5 }],
+    "3": [
+      { to: 0, wt: 1, id: 1 },
+      { to: 1, wt: 2, id: 3 },
+      { to: 4, wt: 1, id: 6 }
+    ],
+    "4": [
+      { to: 1, wt: 2, id: 4 },
+      { to: 2, wt: 5, id: 5 },
+      { to: 3, wt: 1, id: 6 }
+    ]
   },
   nodes: [0, 1, 2, 3, 4, 5]
 };
 let visited = {};
 let visitedEdgesAtStep = [[]];
 let visitedNodesAtStep = [[]];
-let minEdgeAtStep = [[]];
+let minEdgeAtStep = [null];
 let res = {};
 let resProps = ["wt", "prevId", "prevEdge"];
 let log = [];
-let start=0;
+let start = 0;
+
 module.exports = {
-  findShortestPath: function() {
+  findShortestPath: function(graph, start) {
+     [
+      visited,
+      visitedEdgesAtStep,
+      visitedNodesAtStep,
+      minEdgeAtStep,
+      res,
+      log
+    ] = [{}, [[]], [[]], [null], {}, []];
+
+    console.log("input ", graph, start);
     let { edges, nodes } = graph;
     let ind = start;
-    nodes.forEach(nodeId => {
-      res[`${nodeId}`] = { wt: Number.MAX_VALUE, prevId: null };
-      visited[`${nodeId}`] = false;
-    });
+    initTable(nodes);
 
     res[`${start}`] = { wt: 0, prevId: start };
 
     while (true) {
       const neighbours = edges[`${ind}`];
       visited[`${ind}`] = true;
-      let newEdges = [];      
-      
+      let newEdges = [];
+
       if (!neighbours || neighbours.length === 0) break;
-      
+
       neighbours.forEach(v => {
         if (res[`${v.to}`].wt > v.wt + res[`${ind}`].wt) {
           res[`${v.to}`].wt = v.wt + res[`${ind}`].wt;
@@ -47,18 +63,23 @@ module.exports = {
           newEdges.push(v.id);
         }
       });
-      
-      logStep(ind ,newEdges);
+
+      logStep(ind, newEdges);
       ind = getNextNearestV();
-      // break;
     }
-    // console.log(log);
-    return {tables: log, visitedEdgesAtStep, visitedNodesAtStep, minEdgeAtStep};
+    return {
+      tables: log,
+      visitedEdgesAtStep,
+      visitedNodesAtStep,
+      minEdgeAtStep
+    };
   }
 };
 
 function getNextNearestV() {
-  let id = null, lineId=null, min = null;
+  let id = null,
+    lineId = null,
+    min = null;
   Object.getOwnPropertyNames(res).forEach(prop => {
     if (visited[`${prop}`] === false) {
       if (min === null && res[`${prop}`].wt !== null) {
@@ -74,27 +95,37 @@ function getNextNearestV() {
       }
     }
   });
-  
+
   if (id !== null) {
     minEdgeAtStep.push(lineId);
-    return +id
-  };
+    return +id;
+  }
   return null;
 }
 
-function logStep(newNode, newEdges){
-  let table = {};
+function logStep(newNode, newEdges) {
   visitedEdgesAtStep.push(newEdges);
   visitedNodesAtStep.push(newNode);
+  log.push(getUpdatedTable());
+}
 
-  Object.getOwnPropertyNames(res).forEach((nodeId)=> {
+function initTable(nodes) {
+  nodes.forEach(nodeId => {
+    res[`${nodeId}`] = { wt: Number.MAX_VALUE, prevId: null };
+    visited[`${nodeId}`] = false;
+  });
+  log.push(getUpdatedTable());
+}
+function getUpdatedTable() {
+  let table = {};
+  Object.getOwnPropertyNames(res).forEach(nodeId => {
     let node = res[`${nodeId}`];
-      let nearest = {};
-      resProps.forEach( prop => {        
-        nearest[`${prop}`] = node[`${prop}`];
-        return;
-      })
-      table[`${nodeId}`] = nearest;
+    let nearest = {};
+    resProps.forEach(prop => {
+      nearest[`${prop}`] = node[`${prop}`];
+      return;
     });
-    log.push({table});
+    table[`${nodeId}`] = nearest;
+  });
+  return table;
 }

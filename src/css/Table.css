@@ -1,0 +1,13 @@
+.res-table .t-row{
+    display: flex;
+    text-align: center;
+    font-size: 1em;
+    align-content: space-between;
+    justify-content: baseline;
+    /* flex-wrap: wrap;     */
+}
+
+.res-table .t-col{
+    width: calc(100%/3);
+    margin: 1px 3px;
+}

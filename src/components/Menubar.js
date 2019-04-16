@@ -56,6 +56,7 @@ export default class Menubar extends Component {
           menu={menu}
           subMenus={this.state.menus[menu]}
           changeComponent={this.props.changeComponent}
+          clearNotifications={this.props.clearNotifications}
           key={index}
         />
       );

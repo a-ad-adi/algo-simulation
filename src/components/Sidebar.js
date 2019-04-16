@@ -8,7 +8,6 @@ export default class Sidebar extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { notifications: props.notifications };
     this.displayNotifications = this.displayNotifications.bind(this);
   }
 
@@ -17,7 +16,7 @@ export default class Sidebar extends Component {
   }
 
   displayNotifications() {
-    return this.state.notifications.map((n, i) => <Notification key={n.id} data={n} />);
+    return this.props.notifications.map((n, i) => <Notification key={n.id} data={n} />);
   }
 
   scrollToNotification() {

@@ -1,0 +1,28 @@
+.snapshots{
+    /* display: flex; */
+    flex-wrap: nowrap;
+    width: 98%;
+    justify-content: space-between;
+    margin: auto;
+    overflow-y: auto;    
+    max-height: 200px;
+    scrollbar-width: thin;
+}
+.snapshot{
+    display: inline-block;
+}
+.snapshot svg{
+    overflow: auto;
+}
+/* .snapshot .react-raphael path,rect,text{
+    transform: scale(2,2);
+} */
+
+.snapshots .snapshot .react-raphael{
+    display: inline-block;
+    max-height: 180px;
+    margin: 2px;
+    border: 1px solid black;
+    max-height: 180px;
+    scrollbar-width: thin;
+}

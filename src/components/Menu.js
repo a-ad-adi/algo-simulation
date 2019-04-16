@@ -32,6 +32,7 @@ export default class Menu extends React.Component {
   }
     
   handleClick(e) {
+    this.props.clearNotifications();
     this.props.changeComponent({
       type: this.props.menu,
       algo: this.props.subMenu
@@ -63,6 +64,7 @@ export default class Menu extends React.Component {
             menu={this.props.menu}
             subMenu={subMenu}
             changeComponent={this.props.changeComponent}
+            clearNotifications={this.props.clearNotifications}
             key={index}
           />
         );

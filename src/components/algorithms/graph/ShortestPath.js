@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ShortestPath_Animation from "./ShortestPath_Animation";
 import Node from "./Node";
-import { Raphael, Paper, Set, Line, Circle, Text } from "react-raphael";
+import { Raphael, Paper, Set, Rect, Line, Circle, Text } from "react-raphael";
 import uuid from "uuid";
 import { nTypes } from "./../../../util/GlobalVars";
 
@@ -30,16 +30,15 @@ export default class ShortestPath extends Component {
     for (let i = 0; i < ROWS * COLS; i++) {
       this.state[`${i}`] = null;
     }
+    this.setIsReady = this.setIsReady.bind(this);
     this.loadGrid = this.loadGrid.bind(this);
     this.lockGrid = this.lockGrid.bind(this);
     this.addNode = this.addNode.bind(this);
-    this.updateNode = this.updateNode.bind(this);
-    this.getNewLine = this.getNewLine.bind(this);
-    this.addLine = this.addLine.bind(this);
     this.removeLine = this.removeLine.bind(this);
-    this.updateLine = this.updateLine.bind(this);
-    this.updateCircle = this.getNewCircle.bind(this);
-    this.updateEdgeWt = this.getNewEdgeWt.bind(this);
+  }
+
+  setIsReady(isReady) {
+    this.setState({ isReady });
   }
 
   loadGrid(doClear) {
@@ -67,11 +66,10 @@ export default class ShortestPath extends Component {
           status: DEFAULT,
           x,
           y,
-          addNode: this.addNode,
           attr: ATTR.DEFAULT,
           onClickHandler: this.addNode
         });
-        grid[`${c}`] =  newNode;
+        grid[`${c}`] = newNode;
         c++;
       }
     }
@@ -113,11 +111,17 @@ export default class ShortestPath extends Component {
         const id = this.getLineId(p1, p2);
 
         if (!lines[`${id}`]) {
-          lines[`${id}`] = this.getNewLine({ id, p1, p2 });
-          const { x, y } = this.calcOrigin(p1, p2);
           const wt = this.calcWt(p1, p2);
+          lines[`${id}`] = this.getNewLine({ id, p1, p2, wt });
+          const { x, y } = this.calcOrigin(p1, p2);
           circles[`${id}`] = this.getNewCircle({ id, x, y });
-          edgeWts[`${id}`] = this.getNewEdgeWt({ id, x, y, wt });
+          edgeWts[`${id}`] = this.getNewEdgeWt({
+            id,
+            x,
+            y,
+            wt,
+            onDoubleClickHandler: () => this.removeLine(id)
+          });
         }
         this.setStatus(p1.id, DESELECTED);
         this.setStatus(p2.id, DESELECTED);
@@ -147,10 +151,14 @@ export default class ShortestPath extends Component {
     return (
       <ShortestPath_Animation
         getNewNode={this.getNewNode}
+        getNewCustomNode={this.getNewCustomNode}
+        getNewRect={this.getNewRect}
         getNewLine={this.getNewLine}
         getNewCircle={this.getNewCircle}
         getNewEdgeWt={this.getNewEdgeWt}
         notify={this.props.notify}
+        clearNotifications={this.props.clearNotifications}
+        setIsReady={this.setIsReady}
         grid={grid}
         lines={lines}
         circles={circles}
@@ -260,6 +268,23 @@ export default class ShortestPath extends Component {
     };
   }
 
+  getNewCustomNode({ id, status, x, y, attr, onClickHandler }) {
+    return {
+      meta: { id, status, x, y, attr, onClickHandler },
+      node: (
+        <Node
+          key={id}
+          id={id}
+          status={status}
+          x={x}
+          y={y}
+          onClickHandler={onClickHandler}
+          attr={attr}
+        />
+      )
+    };
+  }
+
   addNode(id) {
     if (this.state.gridLocked && this.state.start == null) {
       this.setStatus(id, START_NODE);
@@ -276,8 +301,6 @@ export default class ShortestPath extends Component {
       this.setState({ node1, node2 }, this.addLine);
     }
   }
-
-  updateNode() {}
 
   //node attributes and status related
   getAttrs(status) {
@@ -331,9 +354,12 @@ export default class ShortestPath extends Component {
     return `${node1.x}:${node1.y}:${node2.x}:${node2.y}`;
   }
 
-  getNewRect() {}
+  getNewRect({ x, y, attr }) {
+    return <Rect x={x} y={y} attr={attr} />;
+  }
 
   getNewLine({ id, p1, p2, wt, attr }) {
+    // let stroke="black", strokeWidth=1;
     return {
       meta: {
         id,
@@ -353,23 +379,10 @@ export default class ShortestPath extends Component {
           y1={p1.y + OFFSET / 5}
           x2={p2.x + OFFSET / 5}
           y2={p2.y + OFFSET / 5}
-          attr={{ attr }}
+          attr={attr}
         />
       )
     };
-  }
-
-  updateLine(ids, attr) {
-    const lines = this.state.lines;
-    console.log("Passed line ids : ", ids);
-    ids.forEach(id => {
-      const { x1, y1, x2, y2, from, to, wt } = lines[`${id}`].meta;
-      const p1 = { x: x1, y: y1, id: from };
-      const p2 = { x: x2, y: y2, id: to };
-      console.log(p1, p2);
-      lines[`${id}`].line = this.getNewLine({ id, p1, p2, wt, attr });
-    });
-    this.setState({ lines });
   }
 
   getNewCircle({ id, x, y }) {
@@ -393,14 +406,12 @@ export default class ShortestPath extends Component {
     };
   }
 
-  updateCircle(id) {}
-
-  getNewEdgeWt({ id, x, y, wt }) {
+  getNewEdgeWt({ id, x, y, wt, onDoubleClickHandler }) {
     return {
       meta: { id, x, y, wt },
       wt: (
         <Text
-          dblclick={() => this.removeLine(id)}
+          dblclick={onDoubleClickHandler}
           id={id}
           key={id}
           x={x + OFFSET / 5}
@@ -411,8 +422,6 @@ export default class ShortestPath extends Component {
       )
     };
   }
-
-  updateEdgeWt(id) {}
 
   removeNode(id) {
     const grid = this.state.grid;
@@ -516,7 +525,13 @@ export default class ShortestPath extends Component {
         lines[`${id}`] = this.getNewLine({ id, p1, p2, wt });
         const { x, y } = this.calcOrigin(p1, p2);
         circles[`${id}`] = this.getNewCircle({ id, x, y });
-        edgeWts[`${id}`] = this.getNewEdgeWt({ id, x, y, wt });
+        edgeWts[`${id}`] = this.getNewEdgeWt({
+          id,
+          x,
+          y,
+          wt,
+          onDoubleClickHandler: () => this.removeLine(id)
+        });
       }
     });
     this.setState({ lines, circles, edgeWts });

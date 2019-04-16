@@ -1,36 +1,21 @@
-.shortest-path .init{
-    height: auto;   
+.shortest-path .init {
+  height: auto;
 }
-.shortest-path .init .react-raphael{
-    margin-bottom: 0px;
+.shortest-path .init .react-raphael {
+  margin-bottom: 0px;
+  margin-top: 20px;
 }
-.shortest-path .actions input{
-    font-size: 1em;
-    height: auto;
-    width: auto;
-    float: right;
-}
-.paper-container{    
-    max-width: 50vw;
-    /* display: block; */
-    margin: auto;
-    text-align: center;
+.shortest-path .init .react-raphael .paper-container {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  margin: auto;
+  text-align: center;
 }
 
-.stepwise-graphs{
-    /* display: flex; */
-    flex-wrap: nowrap;
-    width: 98%;
-    overflow-x: auto;    
-    justify-content: space-between;
-    margin: auto;
-    max-height: 200px;
-    scrollbar-width: thin;
-}
-.stepwise-graphs .step{
-    display: inline-block;
-    min-height: 180px;
-    margin: 2px;
-    border: 1px solid black;
-    width: 40%;
+.shortest-path .actions input {
+  font-size: 1em;
+  height: auto;
+  width: auto;
+  float: right;
 }

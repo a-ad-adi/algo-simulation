@@ -23,17 +23,42 @@ export default class Main extends Component {
   loadComponent() {
     switch (this.props.component.algo) {
       case SORT:
-        return <Sort notify={this.props.notify} />;
+        return <Sort notify={this.props.notify} clearNotifications={this.props.clearNotifications}/>;
       case SHORTEST_PATH:
-        return <ShortestPath notify={this.props.notify} />;
+        return (
+          <ShortestPath
+            notify={this.props.notify}
+            clearNotifications={this.props.clearNotifications}
+          />
+        );
       case RAPHAEL:
-        return <RaphaelCmp notify={this.props.notify} />;
+        return (
+          <RaphaelCmp
+            notify={this.props.notify}
+            clearNotifications={this.props.clearNotifications}
+          />
+        );
       case BONSAI:
-        return <Bonsai notify={this.props.notify} />;
+        return (
+          <Bonsai
+            notify={this.props.notify}
+            clearNotifications={this.props.clearNotifications}
+          />
+        );
       case GSAP:
-        return <Gsap notify={this.props.notify} />;
+        return (
+          <Gsap
+            notify={this.props.notify}
+            clearNotifications={this.props.clearNotifications}
+          />
+        );
       case SWAP:
-        return <Swap notify={this.props.notify} />;
+        return (
+          <Swap
+            notify={this.props.notify}
+            clearNotifications={this.props.clearNotifications}
+          />
+        );
       default:
         return null;
     }

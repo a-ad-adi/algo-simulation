@@ -102,6 +102,7 @@ export default class Sort extends Component {
           algo={ALGO}
           scrollToStep={this.scrollToStep}
           notify={this.props.notify}
+          clearNotifications={this.props.clearNotifications}
           MinimizeHeader={this.getHeaderRef}
           minimizeSimulation={this.getSimRef}
           animHeaderSection={ANIM_HEADER}

@@ -19,16 +19,19 @@ export default class Node extends Component {
   }
 
   addNode(status) {
-    this.props.onClickHandler(this.props.id);
+    if (this.props.onClickHandler) this.props.onClickHandler(this.props.id);
   }
 
   render() {
     const { x, y, id, attr } = this.props;
     return (
+      <Set key={id}>
         <Rect x={x} y={y} attr={{ ...this.props.attr }} click={this.addNode} />
+        <Text x={x + 5} y={y + 5} text={id} />
+      </Set>
     );
   }
 }
-{/* <Set>
-  <Text x={x+5} y={y+5} text={id}></Text>
-</Set> */}
+{
+  /* <Rect x={x} y={y} attr={{ ...this.props.attr }} click={this.addNode} /> */
+}

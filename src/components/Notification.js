@@ -18,28 +18,41 @@ export default class Notification extends Component {
   }
   getBody() {
     const data = this.props.data;
-    if (data.type === nTypes.DESCRIBE)
-      return (
-        <div>
-          <div className="n-header">Step {data.stepInfo.stepNo}</div>
-          <div className="n-body">{this.loadDesc(data.stepInfo.desc)}</div>
-        </div>
-      );
-    else if (data.type === nTypes.ERROR) {
-      return (
-        <div>
-          <div className="n-header">{data.err.name}</div>
-          <div className="n-body">{this.loadDesc(data.stepInfo.desc)}</div>
-        </div>
-      );
-    } else if (data.type === nTypes.NOTIFY)
-      return <p>{data.msg}</p>;    
+    switch (data.type) {
+      case nTypes.DESCRIBE:
+        return (
+          <div>
+            <div className="n-header">Step {data.stepInfo.stepNo}</div>
+            <div className="n-body">{this.loadDesc(data.stepInfo.desc)}</div>
+          </div>
+        );
+
+      case nTypes.NOTIFY:
+        return <p>{data.msg}</p>;
+      case nTypes.ERROR:
+        return (
+          <div>
+            <div className="n-header">{data.err.name}</div>
+            <div className="n-body">{this.loadDesc(data.stepInfo.desc)}</div>
+          </div>
+        );
+
+      case nTypes.CONTENT:
+        return (
+          <div>
+            <div className="n-header">Step {data.stepNo}</div>
+            <div className="n-body">{data.content}</div>
+          </div>
+        );
+      default:
+        return;
+    }
   }
-  
+
   loadDesc(desc) {
-    return desc.map( (d, i) => <p key={i}>{d}</p>)
+    return desc.map((d, i) => <p key={i}>{d}</p>);
   }
-  
+
   render() {
     return <div className={this.state.cls}>{this.getBody()}</div>;
   }
