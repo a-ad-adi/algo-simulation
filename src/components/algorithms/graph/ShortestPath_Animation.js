@@ -142,7 +142,7 @@ export default class ShortestPath_Animation extends Component {
       visitedEdge: ANIM_ATTR.LINE.DHLT
     });
     this.setState({ lines, stepNo: --stepNo });
-    this.sendMessage(`Step no: ${stepNo}`);
+    // this.sendMessage(`Step no: ${stepNo}`);
   }
 
   nextStep() {
@@ -212,7 +212,7 @@ export default class ShortestPath_Animation extends Component {
 
   render() {
     const { grid, lines, circles, edgeWts } = this.loadComponents();
-    const c = <div key={uuid()} className="snapshot-container" />;
+    const c = <div></div>;
     return (
       <div className="shortest-path-anim-container">
         <div className="controls">
@@ -235,7 +235,7 @@ export default class ShortestPath_Animation extends Component {
         </div>
         <div className="snapshots">
           {this.state.snapshots}
-          {c}
+          {/* <div key={uuid()} className="snapshot-container" /> */}
           {/* <div key={uuid()}
             className="containerEnd"
             ref={ref => (this.containerEnd = ref)}

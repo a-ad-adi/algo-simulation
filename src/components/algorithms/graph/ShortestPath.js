@@ -95,6 +95,7 @@ export default class ShortestPath extends Component {
   }
 
   canAddLine(node1, node2) {
+    console.log(node1.status, node2.status);
     return (
       node1 &&
       node2 &&
@@ -106,11 +107,13 @@ export default class ShortestPath extends Component {
   addLine() {
     let { node1: p1, node2: p2 } = this.state;
     const { lines, circles, edgeWts } = this.state;
+    console.log("adding line", p1, p2);
     if (p1 && p2) {
       if (this.canAddLine(p1, p2)) {
         const id = this.getLineId(p1, p2);
 
         if (!lines[`${id}`]) {
+          console.log("can add line");
           const wt = this.calcWt(p1, p2);
           lines[`${id}`] = this.getNewLine({ id, p1, p2, wt });
           const { x, y } = this.calcOrigin(p1, p2);
@@ -122,12 +125,13 @@ export default class ShortestPath extends Component {
             wt,
             onDoubleClickHandler: () => this.removeLine(id)
           });
+          // console.log("cannot add line");
+          this.setStatus(p1.id, DESELECTED);
+          this.setStatus(p2.id, DESELECTED);
+          p1 = null;
+          p2 = null;
+          this.setState({ lines, circles, edgeWts, node1: p1, node2: p2 });
         }
-        this.setStatus(p1.id, DESELECTED);
-        this.setStatus(p2.id, DESELECTED);
-        p1 = null;
-        p2 = null;
-        this.setState({ lines, circles, edgeWts, node1: p1, node2: p2 });
       }
     }
   }
@@ -536,7 +540,33 @@ export default class ShortestPath extends Component {
     });
     this.setState({ lines, circles, edgeWts });
   }
+
+  // drawDummyGraph() {
+  //   const [lines, circles, edgeWts] = [{}, {}, {}];
+  //   const edges = [
+  //     { from: 91, to: 63, id: 0 },
+  //     { from: 91, to: 122, id: 1 },
+  //     { from: 63, to: 67, id: 2 },
+  //     { from: 122, to: 126, id: 3 },
+  //     { from: 67, to: 98, id: 4 },
+  //     { from: 126, to: 98, id: 5 }
+  //   ];
+  //   edges.forEach(e => {
+  //     const p1 = this.state.grid[`${e.from}`].meta;
+  //     const p2 = this.state.grid[`${e.to}`].meta;
+  //     p1.status = SELECTED; p2.status = CREATED;
+  //     this.addNode(p1.id);
+  //     this.addNode(p2.id);
+  //     this.addNode(p1.id);
+
+  //     // const node1 = this.setActiveNode({ id:p1.id, SELECTED, x:p1.x, y:p1.y });
+  //     // const node2 = this.setActiveNode({ id:p2.id, CREATED, x:p2.x, y:p2.y });
+  //     // this.setState({node1, node2}, this.addLine);
+  //   });
+  //   // this.setState({ lines, circles, edgeWts });
+  // }
 }
+
 const [WIDTH, HEIGHT, OFFSET] = [25, 25, 40];
 const [DEFAULT, CREATED, SELECTED, DESELECTED, LOCKED, START_NODE] = [
   "default",
